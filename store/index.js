@@ -3,6 +3,7 @@ import movieModule from "./modules/movie";
 import masterModule from "./modules/masterData";
 import accountModule from "./modules/account";
 import bookingModule from "./modules/booking";
+import billModule from "./modules/bill";
 
 const createStore = () => {
   return new Vuex.Store({
@@ -11,7 +12,8 @@ const createStore = () => {
       movie: movieModule,
       masterData: masterModule,
       account: accountModule,
-      booking: bookingModule
+      booking: bookingModule,
+      bill: billModule
     },
     actions: {},
     mutations: {}
