@@ -308,7 +308,7 @@ export default {
         ticket: this.ticket,
         total: this.total,
       });
-      // this.$router.push(this.localePath(`/booking?${movie.name}`));
+      this.$router.push(this.localePath(`/booking/corn`));
     },
   },
 };

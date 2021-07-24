@@ -353,6 +353,29 @@ a:hover {
   }
 }
 
+#elInputNumber {
+  .el-input-number {
+    width: 120px;
+  }
+  .el-input-number__decrease,
+  .el-input-number__increase {
+    background: linear-gradient(
+      90deg,
+      rgba(35, 37, 38, 1) 0%,
+      rgba(65, 67, 69, 1) 100%
+    ) !important;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  .el-input-number .el-input__inner {
+    background-color: #1c262f;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 16px;
+  }
+}
+
 @media screen and (max-width: 414px) {
   .el-dialog {
     width: 80% !important;
