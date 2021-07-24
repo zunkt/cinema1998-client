@@ -1,0 +1,360 @@
+$font-family-sans-serif: Mulish, roboto, helvetica neue, Arial, sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
+$enable-responsive-font-sizes: true;
+
+// Base grayscale colors definitions
+$white: #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #f5f5f5 !default;
+$gray-400: #e8e8e8 !default;
+$gray-500: #d9d9d9 !default;
+$gray-600: #bfbfbf !default;
+$gray-700: #8c8c8c !default;
+$gray-800: #595959 !default;
+$gray-900: #262626 !default;
+$black: #000 !default;
+// Base colors definitions
+$blue: #2a388f !default;
+$indigo: #6610f2 !default;
+$purple: #6f42c1 !default;
+$pink: #e83e8c !default;
+$red: #dc3545 !default;
+$orange: #f39021 !default;
+$yellow: #ffc107 !default;
+$green: #35944a !default;
+$teal: #6fcf97 !default;
+$cyan: #17a2b8 !default;
+
+// Theme color default definitions
+$primary: $blue !default;
+$primary-1: #0754a8 !default;
+$secondary: #032346 !default;
+$success: $green !default;
+$info: $cyan !default;
+$warning: $orange !default;
+$danger: $red !default;
+$light: $gray-100 !default;
+$dark: $gray-800 !default;
+$gray-white: $gray-600 !default;
+$blue-white: #e3f0fe !default;
+$black: #000000 !default;
+// This table defines the theme colors (variant names)
+$theme-colors: () !default;
+$theme-colors: map-merge(
+  (
+    "primary": $primary,
+    "secondary": $secondary,
+    "success": $success,
+    "info": $info,
+    "warning": $warning,
+    "danger": $danger,
+    "light": $light,
+    "dark": $dark,
+    "primary-1": $primary-1,
+    "blue-white": $blue-white,
+    "gray-white": $gray-600,
+    "black": $black
+  ),
+  $theme-colors
+);
+
+.required {
+  color: red;
+}
+
+$headings-margin-bottom: 0;
+$headings-color: #262626;
+
+$h1-font-size: 38px;
+$h2-font-size: 30px;
+$h3-font-size: 24px;
+$h4-font-size: 20px;
+$h5-font-size: 16px;
+$h6-font-size: 14px;
+
+// Then include the following
+@import "bootstrap/scss/bootstrap.scss";
+@import "bootstrap-vue/src/index.scss";
+
+@include media-breakpoint-up(xs) {
+  html {
+    font-size: 0.9rem;
+  }
+}
+@include media-breakpoint-up(sm) {
+  html {
+    font-size: 0.9rem;
+  }
+}
+
+@include media-breakpoint-up(md) {
+  html {
+    font-size: 0.9rem;
+  }
+}
+
+@include media-breakpoint-up(lg) {
+  html {
+    font-size: 0.9rem;
+  }
+}
+@include media-breakpoint-up(xl) {
+  html {
+    font-size: 1rem;
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .container,
+  .container-sm,
+  .container-md,
+  .container-lg,
+  .container-xl {
+    max-width: 1440 !important;
+  }
+}
+.container {
+  flex-direction: column;
+  display: flex;
+}
+.bg-container {
+  // background-color: #f2f3f7 !important;
+  // background: linear-gradient(to bottom, #12151a 0%, #182a3a 100%) !important;
+  background-image: url("../images/backgrounds/background-content.jpg");
+  background-size: contain;
+  background-repeat: round;
+  min-height: 100vh;
+  padding-bottom: 50px;
+}
+.bg_load {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: grey;
+  opacity: 0.2;
+  z-index: 1031;
+}
+.spinner-loading {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  width: 3rem;
+  height: 3rem;
+  z-index: 1032;
+}
+.icon-svg {
+  width: 100%;
+  height: auto;
+}
+
+.rounded-1 {
+  border-radius: 10px !important;
+}
+.font-weight-800 {
+  font-weight: 800 !important;
+}
+.font-weight-900 {
+  font-weight: 900 !important;
+}
+
+.el-popover {
+  // background: #3e3e3e !important;
+  background: url("../images/Background_Sub_Menu.png") !important;
+}
+.el-dropdown-menu {
+  background: url("../images/Background_Sub_Menu.png") !important;
+}
+
+a:hover {
+  text-decoration: none;
+}
+#popup-youtube {
+  .el-dialog__body {
+    padding: 0px !important;
+    background: #000000;
+  }
+  .el-dialog__header {
+    height: 0px !important;
+    margin: 0px !important;
+    padding: 0px !important;
+  }
+  .btn-action {
+    display: flex;
+    justify-content: flex-end;
+    padding: 16px;
+    .btn-booking {
+      background: linear-gradient(
+        90deg,
+        rgba(35, 37, 38, 1) 0%,
+        rgba(65, 67, 69, 1) 100%
+      );
+      font-weight: 700;
+    }
+    .btn-cancel {
+      font-weight: 700;
+      color: #606266;
+    }
+    .btn-cancel:hover {
+      color: #dd474f;
+    }
+  }
+}
+.page-container {
+  background-color: #1c262f;
+  min-height: 100vh;
+  color: #ffffff;
+  .form {
+    width: 100%;
+    padding-inline: 16px;
+    max-width: 444px;
+    margin-left: auto;
+    margin-right: auto;
+    &-title {
+      font-weight: bold;
+      color: #ffffff;
+      font-size: 24px;
+      font-family: BalooTammudu2;
+      text-transform: uppercase;
+      margin-top: 48px;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    &-label {
+      font-weight: bold;
+      color: #ffffff;
+      font-size: 18px;
+      font-family: BalooTammudu2;
+    }
+    el-date-picker {
+      width: 100%;
+    }
+    .el-date-editor.el-input,
+    .el-date-editor.el-input__inner {
+      width: 100%;
+    }
+    &-policy {
+      margin-left: 12px;
+      font-size: 14px;
+      a {
+        text-decoration: none;
+        color: #ffffff;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      a:hover {
+        color: #dd474f;
+      }
+    }
+  }
+}
+
+.btn-action {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px;
+  .btn-booking {
+    background: linear-gradient(
+      90deg,
+      rgba(35, 37, 38, 1) 0%,
+      rgba(65, 67, 69, 1) 100%
+    );
+    font-weight: 700;
+  }
+  .btn-cancel {
+    font-weight: 700;
+    color: #606266;
+  }
+  .btn-cancel:hover {
+    color: #dd474f;
+  }
+  .btn-booking:hover {
+    color: #ffffff;
+  }
+}
+
+#form-login {
+  .el-form-item__content {
+    margin-left: 0px !important;
+  }
+}
+
+#checkbox-form {
+  .el-form-item__content {
+    display: flex;
+  }
+}
+
+.page-content {
+  min-height: 100vh;
+  max-width: 768px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-default {
+  font-family: cursive;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(35, 37, 38, 1) 0%,
+    rgba(65, 67, 69, 1) 100%
+  ) !important;
+  font-weight: 700 !important;
+  &:hover {
+    color: #ffffff !important;
+  }
+}
+
+.el-upload {
+  width: 100%;
+}
+
+#normalPage {
+  .page {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 768px;
+    width: 100%;
+    &-header {
+      margin-top: 32px;
+      font-weight: bold;
+      color: #ffffff;
+      font-size: 32px;
+      font-family: BalooTammudu2;
+      border-bottom: 2px solid #ffffff;
+      text-align: center;
+      text-transform: uppercase;
+      width: 100%;
+    }
+  }
+}
+
+#dialogCustom {
+  .el-dialog {
+    width: 40%;
+    background: linear-gradient(
+      90deg,
+      rgba(35, 37, 38, 1) 0%,
+      rgba(65, 67, 69, 1) 100%
+    ) !important;
+  }
+  .el-dialog__title {
+    color: #ffffff;
+  }
+  .el-dialog__body {
+    color: #ffffff;
+  }
+}
+
+@media screen and (max-width: 414px) {
+  .el-dialog {
+    width: 80% !important;
+  }
+}

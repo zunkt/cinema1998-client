@@ -1,0 +1,69 @@
+.percent-90 .el-select {
+  width: 95%;
+}
+
+.percent-100 .el-select,
+.percent-100 .el-date-editor {
+  width: 100%;
+}
+
+.col-form-label {
+  font-size: 12px;
+  color: #6f6f6f;
+}
+
+.el-dropdown-menu__item.active {
+  background-color: #eaeefb;
+  color: #5974dc;
+}
+
+.col-form-text {
+  font-size: 14px;
+  color: black;
+  font-weight: bold;
+}
+
+.font-12 {
+  font-size: 12px !important;
+}
+
+.font-14 {
+  font-size: 14px !important;
+}
+
+.font-16 {
+  font-size: 16px !important;
+}
+
+.font-20 {
+  font-size: 20px !important;
+}
+
+.el-table td {
+  vertical-align: top;
+}
+
+.el-date-editor .el-range-separator {
+  width: 7%;
+}
+
+/* .page-enter-active,
+.page-leave-active {
+	transition: all 0.3s ease-out;
+}
+.page-enter,
+.page-leave-active {
+	opacity: 1;
+	transform-origin: 50% 50%;
+} */
+
+ul.parsley-errors-list {
+  padding-left: 0;
+}
+.parsley-errors-list li {
+  color: red;
+  list-style-type: none;
+}
+.btn-radius-primary {
+  border-radius: 10px !important;
+}

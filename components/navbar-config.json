@@ -1,0 +1,171 @@
+{
+    "hotline": {
+      "label" : "1900 633 858",
+      "value" : 1900633858
+    },
+    "branch" : {
+      "northern" : {
+        "label" : "Hệ thống Miền Bắc",
+        "group_1" : [
+          {
+            "label" : "Bắc Giang",
+            "value" : "bac-giang"
+          },
+          {
+            "label" : "Hà Nội",
+            "value" : "ha-noi"
+          },
+          {
+            "label" : "Nghệ An",
+            "value" : "nghe-an"
+          },
+          {
+            "label" : "Phú Thọ",
+            "value" : "phu-tho"
+          },
+          {
+            "label" : "Thái Nguyên",
+            "value" : "thai-nguyen"
+          },
+          {
+            "label" : "Vĩnh Phúc",
+            "value" : "vinh-phuc"
+          },
+          {
+            "label" : "Hải Phòng",
+            "value" : "hai-phong"
+          }
+        ],
+        "group_2" : [
+          {
+            "label" : "Bắc Ninh",
+            "value" : "bac-ninh"
+          },
+          {
+            "label" : "Nam Định",
+            "value" : "nam-dinh"
+          },
+          {
+            "label" : "Ninh Bình",
+            "value" : "ninh-binh"
+          },
+          {
+            "label" : "Quảng Ninh",
+            "value" : "quang-ninh"
+          },
+          {
+            "label" : "Thanh Hóa",
+            "value" : "thanh-hoa"
+          },
+          {
+            "label" : "Hưng Yên",
+            "value" : "hung-yen"
+          },
+          {
+            "label" : "Hà Tĩnh",
+            "value" : "ha-tinh"
+          }
+        ]
+      },
+      "central" : {
+        "label" : "Hệ thống Miền Trung",
+        "group_1" :[
+          {
+            "label" : "Đắk Lắk",
+            "value" : "dak-lak"
+          },
+          {
+            "label" : "Đà Nẵng",
+            "value" : "da-nang"
+          },
+          {
+            "label" : "Quảng Ngãi",
+            "value" : "quang-ngai"
+          },
+          {
+            "label" : "Bình Định",
+            "value" : "binh-dinh"
+          }
+        ],
+        "group_2" :[
+          {
+            "label" : "Gia Lai",
+            "value" : "gia-lai"
+          },
+          {
+            "label" : "Khánh Hòa",
+            "value" : "khanh-hoa"
+          },
+          {
+            "label" : "Quảng Nam",
+            "value" : "quang-nam"
+          },
+          {
+            "label" : "Thừa Thiên Huế",
+            "value" : "thua-thien-hue"
+          }
+        ]
+      },
+      "south" : {
+        "label" : "Hệ thống Miền Nam",
+        "group_1" :[
+          {
+            "label" : "An Giang",
+            "value" : "an-giang"
+          },
+          {
+            "label" : "Cần Thơ",
+            "value" : "can-tho"
+          },
+          {
+            "label" : "Kiên Giang",
+            "value" : "kien-giang"
+          },
+          {
+            "label" : "Tiền Giang",
+            "value" : "tien-giang"
+          },
+          {
+            "label" : "Bà Rịa – Vũng Tàu",
+            "value" : "ba-ria-vung-tau"
+          }
+        ],
+  
+        "group_2" :[
+          {
+            "label" : "Bình Dương",
+            "value" : "binh-duong"
+          },
+          {
+            "label" : "Đồng Nai",
+            "value" : "dong-nai"
+          },
+          {
+            "label" : "Long An",
+            "value" : "long-an"
+          },
+          {
+            "label" : "Hồ Chí Minh",
+            "value" : "ho-chi-minh"
+          }
+        ]
+  
+      },
+      "connective" : {
+        "label" : "Liên kết",
+         "group" : [
+          {
+            "label" : "Mua thẻ quà tặng",
+            "value" : "https://eplus.vnvc.vn/"
+          }
+          ,
+          { "id" :"register",
+            "label" : "Đăng ký thành viên",
+            "value" : "https://eplus.vnvc.vn/the-le-chuong-trinh.html"
+          }
+        ]
+
+      }
+    }
+  }
+  
