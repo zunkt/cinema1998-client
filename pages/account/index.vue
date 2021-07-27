@@ -2,7 +2,9 @@
   <div class="bg-container">
     <section class="container mw-100 px-0 align-items-center">
       <div class="d-lg-flex pb-4 px-0 flex-column page-content page">
-        <div class="page-header">THÔNG TIN TÀI CHUNG</div>
+        <div class="page-header">
+          {{ $t("Member").toUpperCase() }}
+        </div>
         <div class="page-content-style">
           <b-row>
             <b-col md="6" cols="12">
@@ -17,29 +19,30 @@
                   :on-success="handleAvatarSuccess"
                   :before-upload="beforeAvatarUpload"
                 >
-                  <el-button class="btn-default">Đổi ảnh</el-button>
+                  <el-button class="btn-default">{{
+                    $t("ChangeImage")
+                  }}</el-button>
                 </el-upload>
               </div>
             </b-col>
             <b-col md="6" cols="12">
               <div class="page-row">
-                Họ và tên :
-                <span class="page-info"> {{ accountInfo.full_Name }} </span>
+                {{ $t("FullName") }}:
+                <span class="page-info"> {{ accountInfo.full_name }} </span>
               </div>
               <div class="page-row">
                 Email :
                 <span class="page-info"> {{ accountInfo.email }} </span>
               </div>
               <div class="page-row">
-                Số điện thoại :
+                {{ $t("Phone") }}:
                 <span class="page-info"> {{ accountInfo.phone }} </span>
               </div>
               <div class="page-row page-info">
-                Xin chào {{ accountInfo.full_name }},
+                {{ $t("Hello") }} {{ accountInfo.full_name }},
               </div>
               <div class="page-row">
-                Với trang này, bạn sẽ quản lý được tất cả thông tin tài khoản
-                của mình.
+                {{ $t("AccountDescription") }}
               </div>
               <!-- <div class="page-row">
                 CMND :
@@ -60,17 +63,19 @@
             </b-col>
           </b-row>
         </div>
-        <div class="page-header">THÔNG TIN TÀI KHOẢN</div>
+        <div class="page-header">
+          {{ $t("AccountInformation").toUpperCase() }}
+        </div>
         <div class="page-content-style">
           <div class="page-row justify-content-start d-flex flex-row">
             <el-button class="btn-default" @click="onSeeDetails()"
-              ><div>Chi tiết</div>
+              ><div>{{ $t("Details") }}</div>
             </el-button>
             <el-button class="btn-default" @click="onChangePassword()"
-              ><div>Đổi mật khẩu</div>
+              ><div>{{ $t("ChangePassword") }}</div>
             </el-button>
             <el-button class="btn-default" @click="onLogout()"
-              ><div>Đăng xuất</div>
+              ><div>{{ $t("Logout") }}</div>
             </el-button>
           </div>
         </div>
@@ -117,20 +122,18 @@ export default {
   watch: {},
   methods: {
     async getData() {
-      const _this = this;
-      const response = await _this.$axios.$get(`/user/auth/me`, {
+      const response = await this.$axios.$get(`/user/auth/me`, {
         headers: {
-          Authorization: "Bearer " + _this.account.token,
+          Authorization: "Bearer " + this.account.token,
         },
       });
-      console.log(response);
       if (response.code === 200) {
-        await _this.$store.commit(
+        await this.$store.commit(
           "account/SET_ACCOUNT_INFO",
           response.data.user
         );
       } else {
-        _this.$message.error(response.message);
+        this.$message.error(response.message);
       }
     },
     onExchangeGift() {

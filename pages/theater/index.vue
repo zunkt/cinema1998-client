@@ -4,22 +4,27 @@
       <div
         class="d-lg-flex pb-4 px-0 flex-column align-items-center"
         style="min-height: 100vh"
+        id="normalPage"
       >
         <div class="page">
-          <div class="page-header">Hệ thống rạp</div>
-          <div class="page-content-style">
+          <div class="page-header">{{ $t("TheaterSystem") }}</div>
+          <div class="page-content-style w-100">
             <div class="header-action">
               <div
                 class="header-action-left"
                 v-bind:class="{ 'header-action-active': active === 'north' }"
               >
-                <el-button v-on:click="active = 'north'">Miền Bắc</el-button>
+                <el-button v-on:click="active = 'north'">{{
+                  $t("North")
+                }}</el-button>
               </div>
               <div
                 class="header-action-right"
                 v-bind:class="{ 'header-action-active': active === 'south' }"
               >
-                <el-button v-on:click="active = 'south'">Miền Nam</el-button>
+                <el-button v-on:click="active = 'south'">{{
+                  $t("South")
+                }}</el-button>
               </div>
             </div>
             <div class="theater">
@@ -48,7 +53,7 @@
                           class="h6 hotline-content"
                           style="font-weight: 400"
                           href="tel:0922993996"
-                          >0922993996</a
+                          >{{ item.phone }}</a
                         >
                       </div>
                     </div>
@@ -75,76 +80,45 @@ export default {
   data() {
     return {
       theater: {
-        north: [
-          {
-            id: "flskajflsjl",
-            name: "TP HCM",
-            fax: "0922993996",
-
-            address:
-              "Tầng 4, TTTM Vincom Plaza Hậu Giang, số 1, Đường 3 tháng 2, Khu vực 3, Phường 5, TP.Vị Thanh, Hậu Giang",
-          },
-          {
-            id: "ljljliesjras",
-            name: "TP Cần thơ",
-            fax: "0922993996",
-
-            address:
-              "Tầng 4, TTTM Vincom Plaza Hậu Giang, số 1, Đường 3 tháng 2, Khu vực 3, Phường 5, TP.Vị Thanh, Hậu Giang",
-          },
-        ],
-        south: [
-          {
-            id: "flskajflsjl",
-            name: "TP Hà nội",
-            fax: "0922993996",
-
-            address:
-              "Tầng 4, TTTM Vincom Plaza Hậu Giang, số 1, Đường 3 tháng 2, Khu vực 3, Phường 5, TP.Vị Thanh, Hậu Giang",
-          },
-          {
-            id: "ljljliesjras",
-            name: "TP Huế",
-            fax: "0922993996",
-
-            address:
-              "Tầng 4, TTTM Vincom Plaza Hậu Giang, số 1, Đường 3 tháng 2, Khu vực 3, Phường 5, TP.Vị Thanh, Hậu Giang",
-          },
-          {
-            id: "ljljliesjras",
-            name: "TP Tuy Hòa",
-            fax: "0922993996",
-
-            address:
-              "Tầng 4, TTTM Vincom Plaza Hậu Giang, số 1, Đường 3 tháng 2, Khu vực 3, Phường 5, TP.Vị Thanh, Hậu Giang",
-          },
-          {
-            id: "ljljliesjras",
-            name: "TP Nha Trang",
-            fax: "0922993996",
-
-            address:
-              "Tầng 4, TTTM Vincom Plaza Hậu Giang, số 1, Đường 3 tháng 2, Khu vực 3, Phường 5, TP.Vị Thanh, Hậu Giang",
-          },
-          {
-            id: "ljljliesjras",
-            name: "TP Quy Nhon",
-            fax: "0922993996",
-
-            address:
-              "Tầng 4, TTTM Vincom Plaza Hậu Giang, số 1, Đường 3 tháng 2, Khu vực 3, Phường 5, TP.Vị Thanh, Hậu Giang",
-          },
-        ],
+        north: [],
+        south: [],
       },
       active: "north",
     };
   },
-  async created() {},
+  async created() {
+    this.getData();
+  },
   mounted() {
     console.log(this.booking);
+    this.getData();
   },
   watch: {},
   methods: {
+    async getData() {
+      const response = await this.$axios.$get(`/user/theater/all`);
+      console.log(response);
+      /// *** fix status *** ///
+      if (response) {
+        this.theater.north =
+          _.filter(
+            response?.data?.theater?.data || [],
+            (o) => o.direction === "north"
+          ) || [];
+        this.theater.south =
+          _.filter(
+            response?.data?.theater?.data || [],
+            (o) => o.direction === "south"
+          ) || [];
+
+        await this.$store.commit(
+          "masterData/SET_THEATER_DATA",
+          response?.data?.movie?.data || {}
+        );
+      } else {
+        this.$message.error(response.message);
+      }
+    },
     async goTheaterDetails(data) {
       await this.$store.commit("booking/SET_BOOKING", {
         ...this.booking,
@@ -227,7 +201,7 @@ export default {
       }
     }
     .theater {
-      margin-top: 100px;
+      margin-top: 60px;
       cursor: pointer;
       &-box {
         padding: 10px;

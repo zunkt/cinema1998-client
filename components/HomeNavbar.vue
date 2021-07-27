@@ -12,7 +12,7 @@
     <div class="container navbar-container">
       <el-row>
         <el-col :span="6">
-          <el-popover
+          <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
             width="200"
@@ -32,7 +32,10 @@
               >
             </div>
             <div slot="reference" class="menu--title">Phim</div>
-          </el-popover>
+          </el-popover> -->
+          <div class="menu--title" @click="goToPage('/theater')">
+            {{ $t("Theater") }}
+          </div>
         </el-col>
         <el-col :span="6">
           <!-- <el-popover
@@ -61,10 +64,12 @@
             </div>
             <div slot="reference" class="menu--title">Rạp</div>
           </el-popover> -->
-          <div @click="goToPage('/theater')" class="menu--title">Rạp</div>
+          <div @click="goToPage('/account')" class="menu--title">
+            {{ $t("Member") }}
+          </div>
         </el-col>
         <el-col :span="6">
-          <el-popover
+          <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
             width="200"
@@ -80,10 +85,14 @@
               >
             </div>
             <div slot="reference" class="menu--title">Thành viên</div>
-          </el-popover>
+          </el-popover> -->
+          <div class="menu--title" @click="goToPage('/account/policy')">
+            {{ $t("Benefit") }}
+          </div>
         </el-col>
+
         <el-col :span="6">
-          <el-popover
+          <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
             width="200"
@@ -108,7 +117,10 @@
               >
             </div>
             <div slot="reference" class="menu--title">Cultureplex</div>
-          </el-popover>
+          </el-popover> -->
+          <div class="menu--title" @click="goToPage('/cultureplex')">
+            {{ $t("GiftCard") }}
+          </div>
         </el-col>
       </el-row>
     </div>

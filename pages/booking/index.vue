@@ -306,7 +306,7 @@ export default {
       await this.$store.commit("booking/SET_BOOKING", {
         ...this.booking,
         ticket: this.ticket,
-        total: this.total,
+        totalTicket: this.total,
       });
       this.$router.push(this.localePath(`/booking/corn`));
     },

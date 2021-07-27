@@ -234,23 +234,46 @@ export default {
       _.orderBy([..._this.movieUpComing], ["slot"], ["asc"]) || [];
     _this.movieUpComing = movieUpComingSort;
     await _this.$store.commit("movie/SET_MOVIES_DATA", moviesDataLocal);
+    this.getData();
+  },
+  mounted() {
+    this.getData();
   },
   watch: {
     moviesData: {
       immediate: true,
       handler(newValue, oldValue) {
-        const _this = this;
-        console.log("mapData", _this.moviesData);
-        _this.movieSelection =
+        console.log("mapData", this.moviesData);
+        this.movieSelection =
           _.filter([...newValue] || [], (o) => o.type == "selection") || [];
-        _this.movieNowShowing =
+        this.movieNowShowing =
           _.filter([...newValue] || [], (o) => o.type == "showing") || [];
-        _this.movieUpComing =
+        this.movieUpComing =
           _.filter([...newValue] || [], (o) => o.type == "up-coming") || [];
+        // this.movieSelection = newValue;
+        // this.movieNowShowing = newValue;
+        // this.movieUpComing = newValue;
       },
     },
   },
   methods: {
+    async getData() {
+      const response = await this.$axios.$get(`/user/movie/all`, {
+        headers: {
+          Authorization:
+            "Bearer " +
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xNjQuOTAuMTQxLjQ2XC9hcGlcL3VzZXJcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjI3Mzg1ODkyLCJuYmYiOjE2MjczODU4OTIsImp0aSI6Im9kMk5oZ041eHdIZmpCbmkiLCJzdWIiOjEsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.g7rrzYbVIoA6YeVgalB-wrft4vfOvDP5xY6UEdNEwlE",
+        },
+      });
+      if (response.status) {
+        // await this.$store.commit(
+        //   "movie/SET_MOVIES_DATA",
+        //   response?.data?.movie?.data || []
+        // );
+      } else {
+        this.$message.error(response.message);
+      }
+    },
     onSwiper(swiper) {
       console.log(swiper);
     },

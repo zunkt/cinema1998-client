@@ -20,17 +20,16 @@
                   <div
                     class="corn-corn-name h4 text-white font-weight-bold my-2"
                   >
-                    Bắp tự chọn
+                    {{ corn.label }}
                   </div>
                   <div
                     class="corn-corn-price h4 text-white font-weight-bold my-2"
                   >
-                    80.000 VNĐ
+                    {{ corn.price | currency }} VNĐ
                   </div>
                   <el-input-number
-                    v-model="cornNumber"
-                    @change="onBuyCorn()"
-                    :min="1"
+                    v-model="corn.quantity"
+                    :min="0"
                     :max="10"
                   ></el-input-number>
                 </div>
@@ -45,17 +44,16 @@
                   <div
                     class="corn-corn-name h4 text-white font-weight-bold my-2"
                   >
-                    Nước ngọt
+                    {{ drink.label }}
                   </div>
                   <div
                     class="corn-corn-price h4 text-white font-weight-bold my-2"
                   >
-                    80.000 VNĐ
+                    {{ drink.price | currency }} VNĐ
                   </div>
                   <el-input-number
-                    v-model="cornNumber"
-                    @change="onBuyCorn()"
-                    :min="1"
+                    v-model="drink.quantity"
+                    :min="0"
                     :max="10"
                   ></el-input-number>
                 </div>
@@ -70,17 +68,16 @@
                   <div
                     class="corn-corn-name h4 text-white font-weight-bold my-2"
                   >
-                    Combo 1 bắp + 1 nước
+                    {{ comboOne.label }}
                   </div>
                   <div
                     class="corn-corn-price h4 text-white font-weight-bold my-2"
                   >
-                    120.000 VNĐ
+                    {{ comboOne.price | currency }} VNĐ
                   </div>
                   <el-input-number
-                    v-model="cornNumber"
-                    @change="onBuyCorn()"
-                    :min="1"
+                    v-model="comboOne.quantity"
+                    :min="0"
                     :max="10"
                   ></el-input-number>
                 </div>
@@ -95,17 +92,16 @@
                   <div
                     class="corn-corn-name h4 text-white font-weight-bold my-2"
                   >
-                    Combo 1 bắp + 2 nước
+                    {{ comboTwo.label }}
                   </div>
                   <div
                     class="corn-corn-price h4 text-white font-weight-bold my-2"
                   >
-                    150.000 VNĐ
+                    {{ comboOne.price | currency }} VNĐ
                   </div>
                   <el-input-number
-                    v-model="cornNumber"
-                    @change="onBuyCorn()"
-                    :min="1"
+                    v-model="comboTwo.quantity"
+                    :min="0"
                     :max="10"
                   ></el-input-number>
                 </div>
@@ -125,7 +121,7 @@
                 <div
                   class="ticket-content-theater h4 font-weight-bold text-white"
                 >
-                  Cinema TP Tuy Hòa
+                  Cinema {{ theater && theater.name }}
                 </div>
                 <div
                   class="
@@ -136,11 +132,12 @@
                     mt-4
                   "
                 >
-                  Spider Man Far From Home
+                  {{ movie && movie.name }}
                 </div>
                 <div class="ticket-content-time h5 text-white mt-2">
                   <span class="font-weight-bold">Giờ chiếu:</span>
-                  7h20 pm - 10h20 pm
+                  {{ formatTime(time && time.timeStart, "HH:mm a") }} -
+                  {{ formatTime(time && time.timeEnd, "HH:mm a") }}
                 </div>
                 <div
                   class="
@@ -153,7 +150,7 @@
                   "
                 >
                   <div
-                    v-for="(item, index) in [1, 2, 3, 4]"
+                    v-for="(item, index) in ticket"
                     :key="index"
                     id="seat"
                     class="
@@ -163,7 +160,7 @@
                       mr-2
                     "
                   >
-                    G12
+                    {{ item.seat }}
                   </div>
                 </div>
                 <div
@@ -175,7 +172,8 @@
                     my-4
                   "
                 >
-                  Tổng tiền vé: 990.000 VNĐ
+                  Tổng tiền vé:
+                  {{ booking && booking.totalTicket | currency }} VNĐ
                 </div>
                 <div
                   class="
@@ -186,7 +184,7 @@
                     my-4
                   "
                 >
-                  Tổng tiền thêm: 990.000 VNĐ
+                  Tổng tiền thêm: {{ getTotalCorn | currency }} VNĐ
                 </div>
                 <div
                   class="
@@ -197,10 +195,21 @@
                     my-4
                   "
                 >
-                  Tổng tiền: 990.000 VNĐ
+                  Tổng tiền:
+                  {{
+                    getTotal(
+                      getTotalCorn,
+                      (booking && booking.totalTicket) || 0
+                    ) | currency
+                  }}
+                  VNĐ
                 </div>
                 <div class="text-right">
-                  <el-button class="btn-default" style="width: auto">
+                  <el-button
+                    @click="dialogVisible = true"
+                    class="btn-default"
+                    style="width: auto"
+                  >
                     Thanh toán
                   </el-button>
                 </div>
@@ -209,24 +218,124 @@
           </b-row>
         </div>
       </div>
+      <el-dialog
+        id="dialogCustom"
+        title="Thông báo xác nhận"
+        :visible.sync="dialogVisible"
+      >
+        <span>Bạn có xác nhận mua?</span>
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            class="btn-default"
+            style="width: auto"
+            @click="onPayment()"
+            >Xác nhận</el-button
+          >
+        </span>
+      </el-dialog>
     </section>
   </div>
 </template>
 <script>
+import { mapState } from "vuex";
+import moment from "moment";
 export default {
   components: {},
-  computed: {},
+  computed: {
+    ...mapState({
+      booking: (state) => state.booking.booking,
+    }),
+    getTotalCorn() {
+      this.totalCorn =
+        this.corn.price * this.corn.quantity +
+        this.drink.price * this.drink.quantity +
+        this.comboOne.price * this.comboOne.quantity +
+        this.comboTwo.price * this.comboTwo.quantity;
+      return (
+        this.corn.price * this.corn.quantity +
+        this.drink.price * this.drink.quantity +
+        this.comboOne.price * this.comboOne.quantity +
+        this.comboTwo.price * this.comboTwo.quantity
+      );
+    },
+  },
+  watch: {
+    booking: {
+      immediate: true,
+      handler(newValue, oldValue) {
+        this.movie = newValue.movie;
+        this.theater = newValue.theater;
+        this.time = newValue.time;
+        this.ticket = newValue.ticket;
+      },
+    },
+  },
   data() {
     return {
-      cornNumber: "",
-      drinkNumber: "",
+      dialogVisible: false,
+      theater: {},
+      movie: {},
+      time: {},
+      ticket: [],
+      bookingCorn: [],
+      totalCorn: 0,
+      corn: {
+        price: 80000,
+        label: "Bắp tự chọn",
+        quantity: 0,
+      },
+      drink: {
+        price: 50000,
+        label: "Nước ngọt tự chọn",
+        quantity: 0,
+      },
+      comboOne: {
+        price: 120000,
+        label: "Combo 1 bắp + 1 nước",
+        quantity: 0,
+      },
+      comboTwo: {
+        price: 150000,
+        label: "Combo 1 bắp + 2 nước",
+        quantity: 0,
+      },
     };
   },
   async created() {},
-  watch: {},
+  mounted() {
+    console.log(this.booking);
+  },
   methods: {
-    onBuyCorn() {},
-    onBuyDrink() {},
+    formatTime(value, type) {
+      return moment(value).format(type);
+    },
+    getTotal(value1, value2) {
+      return value1 + value2;
+    },
+    async onPayment() {
+      this.dialogVisible = false;
+      let newCorn = [];
+      if (this.corn.quantity > 0) {
+        newCorn.push(this.corn);
+      }
+      if (this.drink.quantity > 0) {
+        newCorn.push(this.drink);
+      }
+      if (this.comboOne.quantity > 0) {
+        newCorn.push(this.comboOne);
+      }
+      if (this.comboTwo.quantity > 0) {
+        newCorn.push(this.comboTwo);
+      }
+
+      await this.$store.commit("booking/SET_BOOKING", {
+        ...this.booking,
+        corn: [...newCorn],
+        totalCorn: this.totalCorn,
+        total: this.totalCorn + this.booking.totalTicket,
+      });
+      this.$router.push(this.localePath(`/booking/bill`));
+    },
   },
 };
 </script>

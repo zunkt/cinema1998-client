@@ -20,7 +20,7 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav v-if="windowWidth < 998 || $route.name !== 'home___vi'">
-          <el-popover
+          <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
             width="200"
@@ -32,9 +32,15 @@
               <el-button class="cinema-submenu">Phim sắp chiếu</el-button>
             </div>
             <nuxt-link slot="reference" :to="localePath('/movie')">
-              <div class="menu--title">Phim</div>
+              <div class="menu--title">{{ $t("Movie") }}</div>
             </nuxt-link>
-          </el-popover>
+          </el-popover> -->
+
+          <nuxt-link slot="reference" :to="localePath('/home')">
+            <div class="menu--title">
+              {{ $t("Movie") }}
+            </div>
+          </nuxt-link>
           <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
@@ -52,9 +58,9 @@
             </nuxt-link>
           </el-popover> -->
           <nuxt-link slot="reference" :to="localePath('/theater')">
-            <div class="menu--title">Rạp</div>
+            <div class="menu--title">{{ $t("Theater") }}</div>
           </nuxt-link>
-          <el-popover
+          <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
             width="200"
@@ -69,8 +75,14 @@
                 <el-button class="cinema-submenu">Quyền lợi</el-button>
               </nuxt-link>
             </div>
-            <div slot="reference" class="menu--title">Thành viên</div>
-          </el-popover>
+            <div slot="reference" class="menu--title">{{ $t("Member") }}</div>
+          </el-popover> -->
+          <nuxt-link slot="reference" :to="localePath('/account')">
+            <div class="menu--title">
+              {{ $t("Member") }}
+            </div>
+          </nuxt-link>
+
           <el-popover
             id="cinema-menu"
             placement="bottom"
@@ -93,13 +105,17 @@
       </b-collapse>
       <b-navbar-nav class="ml-auto d-lg-block d-none">
         <el-dropdown :hide-on-click="true">
-          <span class="language-title"> Languages </span>
+          <span class="language-title"> {{ $t("Languages") }} </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>
-              <p class="language-item">Việt Nam</p>
+              <p class="language-item" @click="onChangeLanguaue('vi')">
+                {{ $t("Vietnamese") }}
+              </p>
             </el-dropdown-item>
             <el-dropdown-item>
-              <p class="language-item">English</p>
+              <p class="language-item" @click="onChangeLanguaue('en')">
+                {{ $t("English") }}
+              </p>
             </el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
@@ -116,6 +132,8 @@
   </div>
 </template>
 <script>
+import { Validator } from "vee-validate";
+
 export default {
   data() {
     return {
@@ -141,6 +159,11 @@ export default {
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
     },
+
+    onChangeLanguaue(value) {
+      this.$i18n.locale = value;
+    },
+
     onResize() {
       const _this = this;
       _this.windowWidth = window.innerWidth;

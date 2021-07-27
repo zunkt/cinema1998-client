@@ -4,7 +4,8 @@ import mutations from "./mutations";
 
 const state = {
   subtitleData: [],
-  categoryData: []
+  categoryData: [],
+  theaterData: []
 };
 
 export default {

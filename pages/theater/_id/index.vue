@@ -41,12 +41,12 @@
                     class="h6 hotline-content"
                     style="font-weight: 400"
                     href="tel:0922993996"
-                    >{{ theater.fax }}</a
+                    >{{ theater.phone }}</a
                   >
                 </div>
               </div>
             </div>
-            <div class="page-header">Lịch chiếu</div>
+            <div class="page-header">{{ $t("ShowTimes") }}</div>
             <div
               class="schedule mb-4 mt-2"
               v-for="(item, index) in schedule"
