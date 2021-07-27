@@ -12,17 +12,17 @@
             <div class="header-action">
               <div
                 class="header-action-left"
-                v-bind:class="{ 'header-action-active': active === 'north' }"
+                v-bind:class="{ 'header-action-active': active === 'North' }"
               >
-                <el-button v-on:click="active = 'north'">{{
+                <el-button v-on:click="active = 'North'">{{
                   $t("North")
                 }}</el-button>
               </div>
               <div
                 class="header-action-right"
-                v-bind:class="{ 'header-action-active': active === 'south' }"
+                v-bind:class="{ 'header-action-active': active === 'South' }"
               >
-                <el-button v-on:click="active = 'south'">{{
+                <el-button v-on:click="active = 'South'">{{
                   $t("South")
                 }}</el-button>
               </div>
@@ -80,35 +80,32 @@ export default {
   data() {
     return {
       theater: {
-        north: [],
-        south: [],
+        North: [],
+        South: [],
       },
-      active: "north",
+      active: "North",
     };
   },
   async created() {
-    this.getData();
+    await this.getData();
   },
-  mounted() {
-    console.log(this.booking);
-    this.getData();
-  },
+  async mounted() {},
   watch: {},
   methods: {
     async getData() {
-      const response = await this.$axios.$get(`/user/theater/all`);
+      const response = await this.$axios.$get(`user/theater/all?size=100`);
       console.log(response);
       /// *** fix status *** ///
       if (response) {
-        this.theater.north =
+        this.theater.North =
           _.filter(
             response?.data?.theater?.data || [],
-            (o) => o.direction === "north"
+            (o) => o.direction === "North"
           ) || [];
-        this.theater.south =
+        this.theater.South =
           _.filter(
             response?.data?.theater?.data || [],
-            (o) => o.direction === "south"
+            (o) => o.direction === "South"
           ) || [];
 
         await this.$store.commit(
