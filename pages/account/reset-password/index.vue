@@ -7,29 +7,37 @@
             class="d-lg-flex pb-4 px-0 flex-column align-items-center w-100"
             style="margin-top: 120px; min-height: 100vh"
           >
-            <div class="page-title">{{ $t("ForgotPassword") }}</div>
-            <div class="page-description">
-              {{ $t("ForgotPasswordDescription") }}
-            </div>
+            <div class="page-title">Reset Mật Khẩu</div>
             <div>
               <el-form
                 id="form-login"
-                :model="requestEmailForm"
+                :model="changePasswordForm"
                 :rules="rules"
-                ref="requestEmailForm"
+                ref="changePasswordForm"
                 status-icon
                 label-width="120px"
               >
                 <div class="form-input-content"></div>
                 <div class="form-input-content">
-                  <el-form-item prop="email">
+                  <el-form-item prop="newPassword">
                     <div>
-                      <span class="form-title">Email</span>
+                      <span class="form-title">New password*</span>
                     </div>
                     <el-input
                       class="input-form-style"
-                      type="email"
-                      v-model="requestEmailForm.email"
+                      type="password"
+                      v-model="changePasswordForm.newPassword"
+                      autocomplete="off"
+                    ></el-input>
+                  </el-form-item>
+                  <el-form-item prop="confirmPassword">
+                    <div>
+                      <span class="form-title">Confirm new password*</span>
+                    </div>
+                    <el-input
+                      class="input-form-style"
+                      type="password"
+                      v-model="changePasswordForm.confirmPassword"
                       autocomplete="off"
                     ></el-input>
                   </el-form-item>
@@ -38,12 +46,12 @@
                   <el-button
                     class="btn-booking"
                     type="primary"
-                    @click="submitForm('requestEmailForm')"
-                    >{{ $t("SendRequest") }}</el-button
+                    @click="submitForm('changePasswordForm')"
+                    >Submit</el-button
                   >
-                  <el-button class="btn-cancel" @click="onCancel()">{{
-                    $t("Cancel")
-                  }}</el-button>
+                  <el-button class="btn-cancel" @click="onCancel()"
+                    >Hủy</el-button
+                  >
                 </el-form-item>
               </el-form>
             </div>
@@ -55,6 +63,7 @@
 </template>
 <script>
 import { mapState } from "vuex";
+
 export default {
   components: {},
   computed: {
@@ -64,34 +73,44 @@ export default {
   },
   data() {
     return {
-      requestEmailForm: {
+      changePasswordForm: {
+        token: "",
         email: "",
+        password: "",
+        newPassword: "",
+        confirmPassword: "",
       },
       rules: {
-        email: [
+        newPassword: [
           {
             required: true,
-            message: this.$t("Errors.EmailRequired"),
+            message: "Vui lòng nhập mật khẩu mới",
             trigger: "blur",
           },
           {
-            type: "email",
-            message: this.$t("Errors.Invalid"),
-            trigger: ["blur", "change"],
+            min: 8,
+            message: "Mật khẩu phải có ít nhất 8 ký tự",
+            trigger: "blur",
           },
         ],
       },
     };
   },
   async created() {},
+  mounted() {
+    let that = this;
+    var url = window.location;
+    that.changePasswordForm.token = new URLSearchParams(url.search).get('token');
+    that.changePasswordForm.email = new URLSearchParams(url.search).get('email');
+  },
   watch: {},
   methods: {
     submitForm(formName) {
-      console.log(formName);
       const _this = this;
       _this.$refs[formName].validate((valid) => {
         if (valid) {
-          _this.onForgotPassword();
+          console.log(_this.changePasswordForm.password)
+          // _this.onChangePassword();
         } else {
           console.log("error submit!!");
           return false;
@@ -102,20 +121,18 @@ export default {
       const _this = this;
       _this.$router.push(_this.localePath("/account"));
     },
-    onRequest() {
-      const _this = this;
-      _this.$router.push(_this.localePath("/account"));
-    },
-    async onForgotPassword() {
+    async onChangePassword() {
       const _this = this;
       try {
-        const response = await _this.$axios.$post(`/user/auth/forgot-password`, {
-          email: _this.requestEmailForm.email,
+        const response = await _this.$axios.$post(`/user/reset-password`, {
+          token: _this.changePasswordForm.token,
+          email: _this.changePasswordForm.email,
+          password: _this.changePasswordForm.password,
         });
         if (response.status) {
           await this.onAlertMessageBox(
             "success",
-            "Vui lòng kiểm tra Mail của bạn!"
+            "Đã thay đổi Password thành công!"
           );
         } else {
           console.log(response.message);
