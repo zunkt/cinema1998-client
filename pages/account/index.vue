@@ -34,10 +34,10 @@
                 Email :
                 <span class="page-info"> {{ accountInfo.email }} </span>
               </div>
-              <div class="page-row">
+              <!-- <div class="page-row">
                 {{ $t("Phone") }}:
                 <span class="page-info"> {{ accountInfo.phone }} </span>
-              </div>
+              </div> -->
               <div class="page-row page-info">
                 {{ $t("Hello") }} {{ accountInfo.full_name }},
               </div>

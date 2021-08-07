@@ -7,7 +7,7 @@
             class="d-lg-flex pb-4 px-0 flex-column align-items-center w-100"
             style="margin-top: 120px; min-height: 100vh"
           >
-            <div class="page-title">Reset Mật Khẩu</div>
+            <div class="page-title">{{ $t("ResetPassword") }}</div>
             <div>
               <el-form
                 id="form-login"
@@ -47,11 +47,11 @@
                     class="btn-booking"
                     type="primary"
                     @click="submitForm('changePasswordForm')"
-                    >Submit</el-button
+                    >{{ $t("Confirm") }}</el-button
                   >
-                  <el-button class="btn-cancel" @click="onCancel()"
-                    >Hủy</el-button
-                  >
+                  <el-button class="btn-cancel" @click="onCancel()">{{
+                    $t("Cancel")
+                  }}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -72,6 +72,15 @@ export default {
     }),
   },
   data() {
+    var validateConfirmPassword = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("Vui lòng nhập lại mật khẩu"));
+      } else if (value !== this.changePasswordForm.newPassword) {
+        callback(new Error("Mật khẩu nhập lại không chính xác"));
+      } else {
+        callback();
+      }
+    };
     return {
       changePasswordForm: {
         token: "",
@@ -93,6 +102,9 @@ export default {
             trigger: "blur",
           },
         ],
+        confirmPassword: [
+          { validator: validateConfirmPassword, trigger: "blur" },
+        ],
       },
     };
   },
@@ -100,8 +112,16 @@ export default {
   mounted() {
     let that = this;
     var url = window.location;
-    that.changePasswordForm.token = new URLSearchParams(url.search).get('token');
-    that.changePasswordForm.email = new URLSearchParams(url.search).get('email');
+    console.log(
+      "sssssssssssssssssss",
+      new URLSearchParams(url.search).get("token")
+    );
+    that.changePasswordForm.token = new URLSearchParams(url.search).get(
+      "token"
+    );
+    that.changePasswordForm.email = new URLSearchParams(url.search).get(
+      "email"
+    );
   },
   watch: {},
   methods: {
@@ -109,7 +129,7 @@ export default {
       const _this = this;
       _this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(_this.changePasswordForm.password)
+          console.log(_this.changePasswordForm);
           // _this.onChangePassword();
         } else {
           console.log("error submit!!");
@@ -125,15 +145,13 @@ export default {
       const _this = this;
       try {
         const response = await _this.$axios.$post(`/user/reset-password`, {
-          token: _this.changePasswordForm.token,
-          email: _this.changePasswordForm.email,
-          password: _this.changePasswordForm.password,
+          token: _this.account.token,
+          email: _this.account.email,
+          password: _this.changePasswordForm.confirmPassword,
         });
+        console.log(response);
         if (response.status) {
-          await this.onAlertMessageBox(
-            "success",
-            "Đã thay đổi Password thành công!"
-          );
+          await this.onAlertMessageBox("success", $t("ResetPasswordSuccess"));
         } else {
           console.log(response.message);
           this.onAlertMessageBox(

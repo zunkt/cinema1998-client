@@ -109,14 +109,20 @@ export default {
     async onForgotPassword() {
       const _this = this;
       try {
-        const response = await _this.$axios.$post(`/user/auth/forgot-password`, {
-          email: _this.requestEmailForm.email,
-        });
+        const response = await _this.$axios.$post(
+          `/user/auth/forgot-password`,
+          {
+            email: _this.requestEmailForm.email,
+          }
+        );
         if (response.status) {
           await this.onAlertMessageBox(
             "success",
-            "Vui lòng kiểm tra Mail của bạn!"
+            response.message || $t("PleaseCheckYourMail")
           );
+          setTimeout(() => {
+            _this.$router.push(_this.localePath("/account"));
+          }, 1000);
         } else {
           console.log(response.message);
           this.onAlertMessageBox(
