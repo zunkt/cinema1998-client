@@ -28,6 +28,7 @@ export default {
   Cancel: "Hủy",
   SeeDetails: "Xem chi tiết",
   MovieSchedule: "Lịch phim",
+  Room: "Phòng",
   Errors: {
     EmailRequired: "Vui lòng nhập Email",
     EmailInvalid: "Email không hợp lệ"
