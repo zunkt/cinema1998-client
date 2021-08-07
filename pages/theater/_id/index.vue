@@ -134,6 +134,7 @@ export default {
   computed: {
     ...mapState({
       booking: (state) => state.booking.booking,
+      account: (state) => state.account.account,
     }),
     emptyRoom() {
       return _.isEmpty(this.selectedRoom);
@@ -309,16 +310,17 @@ export default {
         },
       ],
       selectedRoom: {},
+      scheduleData: [],
     };
   },
   async created() {
     setTimeout(async () => {
       try {
+        /// *** theater details *** ///
         const response = await this.$axios.$get(
           `user/theater/show/${this.booking.theater.id}`
         );
         console.log("response:", response);
-        /// *** theater details *** ///
         if (response.status) {
           this.theater = response.data.theater;
           await this.$store.commit("booking/SET_BOOKING", {
@@ -330,9 +332,22 @@ export default {
         } else {
           this.$message.error(response.message);
         }
+
+        /// *** Schedule *** ///
+        const responseSchedule = await this.$axios.$get(`/user/schedule/all`, {
+          headers: {
+            Authorization: "Bearer " + this.account.token,
+          },
+        });
+        console.log("responseSchedule:", response);
+        if (responseSchedule.status) {
+          this.scheduleData = responseSchedule.data.schedule.data;
+        } else {
+          this.$message.error(responseSchedule.message);
+        }
       } catch (error) {
         if (error.response) {
-          console.log(error.response.data);
+          console.log("Error:", error.response.data);
           this.onAlertMessageBox(
             "error",
             error.response.data.message || "Response message null"
@@ -363,6 +378,18 @@ export default {
     onSelectedRoom(value) {
       console.log(value);
       this.selectedRoom = value;
+      const keyIndex = _.findIndex(
+        [...this.scheduleData] || [],
+        (o) => o.room?.id === value.id && o.room?.theater_id === this.theater.id
+      );
+      console.log(keyIndex);
+    },
+    onAlertMessageBox(type, message) {
+      const _this = this;
+      _this.$message({
+        message: message,
+        type: type,
+      });
     },
   },
 };

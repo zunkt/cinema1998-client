@@ -162,6 +162,7 @@ export default {
       movieDetails: (state) => state.movie.movieDetails,
       subtitleData: (state) => state.masterData.subtitleData,
       categoryData: (state) => state.masterData.categoryData,
+      account: (state) => state.account.account,
     }),
   },
   data() {
@@ -214,7 +215,7 @@ export default {
       }
     },
     formatTime(value, type) {
-      return moment(value).format(type);
+      return moment(value).utc().format(type);
     },
     getDate(date) {
       return moment(date).format("DD/MM/YYYY") || "";
@@ -237,7 +238,49 @@ export default {
         this.scheduleData = [];
       }
     },
-    onBooking() {},
+    async onBooking(value) {
+      console.log("schedule :", value);
+      console.log("theater", this);
+      try {
+        const response = await this.$axios.$get(
+          `/user/room/show/${value.room_id}`,
+          {
+            headers: {
+              Authorization: "Bearer " + this.account.token,
+            },
+          }
+        );
+        console.log(response);
+        if (response.status) {
+          const seatGroupbySchedule =
+            _.filter(
+              [...response.data.room.seat] || [],
+              (o) => o.schedule_id === value.id
+            ) || [];
+          await this.$store.commit("booking/SET_BOOKING", {
+            theater: response.data.room.theater,
+            schedule: value,
+            movie: this.movieDetails,
+            seatBooked: seatGroupbySchedule,
+          });
+          setTimeout(() => {
+            this.$router.push(
+              this.localePath(`/booking?${this.movieDetails.name}`)
+            );
+          }, 500);
+        } else {
+          this.$message.error(response.message);
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
+    },
   },
 };
 </script>

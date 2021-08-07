@@ -9,6 +9,23 @@
         <div class="page">
           <div class="page-header">
             {{ bookingPage.movie && bookingPage.movie.name }}
+            <div>
+              (
+              {{
+                formatTime(
+                  bookingPage.schedule && bookingPage.schedule.time_start,
+                  "HH:mm a"
+                )
+              }}
+              -
+              {{
+                formatTime(
+                  bookingPage.schedule && bookingPage.schedule.time_end,
+                  "HH:mm a"
+                )
+              }}
+              )
+            </div>
           </div>
           <div class="d-flex flex-row justify-content-around w-100 my-4 pt-4">
             <div>
@@ -21,6 +38,12 @@
               <div class="example-box-booked"></div>
               <div class="text-center text-white h5 font-weight-bold pt-4">
                 Booked
+              </div>
+            </div>
+            <div>
+              <div class="example-box-selected"></div>
+              <div class="text-center text-white h5 font-weight-bold pt-4">
+                Selected
               </div>
             </div>
             <div>
@@ -52,6 +75,7 @@
                       v-bind:class="{
                         'seat-booked': itemColumn.status === 'booked',
                         'seat-sold': itemColumn.status === 'sold',
+                        'seat-selected': itemColumn.status === 'selected',
                       }"
                     >
                       {{ itemColumn.value }}
@@ -89,6 +113,8 @@
                           itemRow['seat'][itemColumn]['status'] === 'booked',
                         'seat-sold':
                           itemRow['seat'][itemColumn]['status'] === 'sold',
+                        'seat-selected':
+                          itemRow['seat'][itemColumn]['status'] === 'selected',
                       }"
                     >
                       {{ itemRow["seat"][itemColumn]["value"] }}
@@ -125,6 +151,9 @@
                               'booked',
                             'seat-sold':
                               itemRow['seat'][itemColumn1]['status'] === 'sold',
+                            'seat-selected':
+                              itemRow['seat'][itemColumn1]['status'] ===
+                              'selected',
                           }"
                         >
                           {{ itemRow["seat"][itemColumn1]["value"] }}
@@ -157,6 +186,9 @@
                               'booked',
                             'seat-sold':
                               itemRow['seat'][itemColumn2]['status'] === 'sold',
+                            'seat-selected':
+                              itemRow['seat'][itemColumn2]['status'] ===
+                              'selected',
                           }"
                         >
                           {{ itemRow["seat"][itemColumn2]["value"] }}
@@ -172,31 +204,28 @@
           <b-row class="h6 text-white font-weight-bold w-100 my-4 px-md-0 px-4">
             <b-col cols="12" md="6">
               <div>
-                Thông tin vé:
-                <div>- Hàng E , F sẻ có giá vé là 95.000 VNĐ cho mỗi vé.</div>
-                <div>- Hàng G sẻ có giá vé là 90.000 VNĐ cho mỗi vé.</div>
-                <div>- Các hàng khác có giá vé là 80.000 VNĐ cho mỗi vé.</div>
-                <div>
-                  - Vé sau khi mua sẻ được đổi trả trước 8h giờ phim chiếu. Sau
-                  thời gian trên Cinema 1998 không chịu trách nhiệm đổi trả.
-                </div>
+                {{ $t("MovieScreen.TicketInformation") }}:
+                <div>- {{ $t("MovieScreen.TicketInfo1") }}</div>
+                <div>- {{ $t("MovieScreen.TicketInfo2") }}</div>
+                <div>- {{ $t("MovieScreen.TicketInfo3") }}</div>
+                <div>- {{ $t("MovieScreen.TicketInfo4") }}</div>
               </div>
             </b-col>
           </b-row>
 
           <div class="container-result px-md-0 px-4">
             <div class="h4 text-white font-weight-bold">
-              Bạn đã đặt : {{ this.ticket.length }} vé
+              {{ $t("YouAreBooked") }}: {{ this.ticket.length }} vé
             </div>
             <div class="h4 text-white font-weight-bold mt-2">
-              Tổng tiền : {{ this.total | currency }} VNĐ
+              {{ $t("TotalMoney") }}: {{ this.total | currency }} VNĐ
             </div>
             <el-button
               :disabled="ticket.length === 0 ? true : false"
               v-on:click="dialogVisible = true"
               class="btn-default my-4"
               style="width: auto"
-              >Thanh toán</el-button
+              >{{ $t("Payment") }}</el-button
             >
           </div>
         </div>
@@ -207,15 +236,15 @@
         :visible.sync="dialogVisible"
       >
         <span
-          >Bạn có xác nhận mua {{ this.ticket.length }} vé với số tiền
-          {{ this.total }} VNĐ?</span
+          >{{ $t("MovieScreen.SeatConfirm1") }} {{ this.ticket.length }}
+          {{ $t("MovieScreen.SeatConfirm2") }} {{ this.total }} VNĐ?</span
         >
         <span slot="footer" class="dialog-footer">
           <el-button
             class="btn-default"
             style="width: auto"
             @click="onConfirmBooked()"
-            >Xác nhận</el-button
+            >{{ $t("Confirm") }}</el-button
           >
         </span>
       </el-dialog>
@@ -225,12 +254,15 @@
 <script>
 import { mapState } from "vuex";
 import { seatDataConfig } from "@/pages/booking/seat";
+import moment from "moment";
 
 export default {
   components: {},
   computed: {
     ...mapState({
       booking: (state) => state.booking.booking,
+      account: (state) => state.account.account,
+      accountInfo: (state) => state.account.accountInfo,
     }),
   },
   watch: {
@@ -258,28 +290,44 @@ export default {
     return {
       dialogVisible: false,
       bookingPage: {},
-      seatData: seatDataConfig,
+      seatData: [],
       ticket: [],
       total: 0,
     };
   },
-  async created() {},
+  async created() {
+    setTimeout(() => {
+      this.seatData = seatDataConfig;
+      _.forEach([...seatDataConfig] || [], (o, i) => {
+        _.forEach([...o.seat] || [], (p, indexSeat) => {
+          const keyIndex = _.findIndex(
+            [...this.bookingPage.seatBooked] || [],
+            (h) => p.value === h.value
+          );
+          if (keyIndex > -1) {
+            this.seatData[i]["seat"][indexSeat] =
+              this.bookingPage.seatBooked[keyIndex];
+          }
+        });
+      });
+    }, 500);
+  },
   async mounted() {},
   methods: {
     onBooked(seat, indexRow, indexColumn) {
       if (seat.status !== "sold") {
         switch (seat.status) {
           case "available":
-            this.seatData[indexRow]["seat"][indexColumn]["status"] = "booked";
+            this.seatData[indexRow]["seat"][indexColumn]["status"] = "selected";
             break;
-          case "booked":
+          case "selected":
             this.seatData[indexRow]["seat"][indexColumn]["status"] =
               "available";
             break;
         }
         const keyIndex = _.findIndex(
           this.ticket || [],
-          (o) => o.seat === seat.value
+          (o) => o.value === seat.value
         );
         console.log(keyIndex);
 
@@ -293,8 +341,11 @@ export default {
         } else {
           let newTicket = [...this.ticket];
           newTicket.push({
-            seat: seat?.value,
+            value: seat?.value,
+            status: "selected",
             price: seat?.price,
+            room_id: this.bookingPage.schedule.room_id,
+            schedule_id: this.bookingPage.schedule.id,
           });
           this.ticket = newTicket;
         }
@@ -308,7 +359,100 @@ export default {
         ticket: this.ticket,
         totalTicket: this.total,
       });
-      this.$router.push(this.localePath(`/booking/corn`));
+      this.onAddTicket();
+      // this.$router.push(this.localePath(`/booking/corn`));
+    },
+    formatTime(value, type) {
+      return moment(value).utc().format(type);
+    },
+    async onAddSeat(seatValue, ticketId) {
+      try {
+        const response = await this.$axios.$post(
+          `/user/seat/store`,
+          {
+            value: seatValue.value,
+            status: "booked",
+            price: seatValue.price,
+            ticket_id: ticketId,
+            room_id: seatValue.room_id,
+            schedule_id: seatValue.schedule_id,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + this.account.token,
+            },
+          }
+        );
+        if (response.status) {
+        } else {
+          this.$message.error(response.message);
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
+    },
+    async onAddTicket() {
+      try {
+        const response = await this.$axios.$post(
+          `/user/ticket/store`,
+          {
+            name: this.randomString(),
+            schedule_id: this.bookingPage.schedule.id,
+            user_id: this.accountInfo.id,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + this.account.token,
+            },
+          }
+        );
+        /// *** wait response status fix *** ///
+        if (response) {
+          const addAllSeat = _.map([...this.ticket] || [], (o) => {
+            return this.onAddSeat(o, response.data.ticket.id);
+          });
+          await Promise.all(addAllSeat);
+          await this.$store.commit("booking/SET_BOOKING", {
+            ...this.booking,
+            ticket: this.ticket,
+            ticketDetails: response.data.ticket,
+          });
+          setTimeout(() => {
+            this.$router.push(this.localePath(`/booking/bill`));
+          }, 1000);
+        } else {
+          this.$message.error(response.message);
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
+    },
+    onAlertMessageBox(type, message) {
+      const _this = this;
+      _this.$message({
+        message: message,
+        type: type,
+      });
+    },
+    randomString() {
+      var chars =
+        "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      var result = "";
+      for (var i = 10; i > 0; --i)
+        result += chars[Math.floor(Math.random() * chars.length)];
+      return result;
     },
   },
 };
@@ -331,6 +475,12 @@ export default {
     height: 50px;
     width: 60px;
     background-color: #00c48c;
+    border: 1px solid #ffffff;
+  }
+  &-selected {
+    height: 50px;
+    width: 60px;
+    background-color: #ffce56;
     border: 1px solid #ffffff;
   }
 }
@@ -372,6 +522,9 @@ export default {
       }
       .seat-booked {
         background-color: #00c48c;
+      }
+      .seat-selected {
+        background-color: #ffce56;
       }
     }
     &-result {

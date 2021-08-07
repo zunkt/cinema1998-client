@@ -7,23 +7,29 @@
         id="normalPage"
       >
         <div class="page">
-          <div class="page-header">THÔNG TIN HÓA ĐƠN</div>
+          <div class="page-header">{{ $t("MovieScreen.BillInformation") }}</div>
           <div class="content mt-2 mt-md-4">
             <div class="content-background">
               <div class="d-flex content-row">
-                <div class="h4 text-white font-weight-bold">Phim</div>
+                <div class="h4 text-white font-weight-bold">
+                  {{ $t("Movie") }}
+                </div>
                 <div class="h5 text-white">
                   {{ booking.movie && booking.movie.name }}
                 </div>
               </div>
               <div class="d-flex content-row">
-                <div class="h4 text-white font-weight-bold">Rạp</div>
+                <div class="h4 text-white font-weight-bold">
+                  {{ $t("Theater") }}
+                </div>
                 <div class="h4 text-white">
                   Cinema {{ booking.theater && booking.theater.name }}
                 </div>
               </div>
               <div class="d-flex content-row">
-                <div class="h4 text-white font-weight-bold">Thời gian:</div>
+                <div class="h4 text-white font-weight-bold">
+                  {{ $t("Time") }}:
+                </div>
                 <div class="h5 text-white">
                   {{
                     formatTime(
@@ -41,7 +47,7 @@
                 <div class="h4 text-white font-weight-bold">Vé</div>
                 <div class="h5 text-white">
                   <span v-for="(item, index) in booking.ticket" :key="index">
-                    {{ item.seat }}
+                    {{ item.value }}
                   </span>
                 </div>
               </div>
@@ -54,13 +60,21 @@
                 </div>
               </div>
               <div class="d-flex content-row">
-                <div class="h4 text-white font-weight-bold">Số điện thoại:</div>
-                <div class="h6 text-white">0922993996</div>
+                <div class="h4 text-white font-weight-bold">
+                  {{ $t("Phone") }}:
+                </div>
+                <div class="h6 text-white">
+                  {{
+                    (this.accountInfo && this.accountInfo.phone) || "0000000000"
+                  }}
+                </div>
               </div>
               <div class="d-flex content-row">
-                <div class="h4 text-white font-weight-bold">Tổng tiền:</div>
+                <div class="h4 text-white font-weight-bold">
+                  {{ $t("TotalMoney") }}:
+                </div>
                 <div class="h4 text-white">
-                  {{ booking && booking.total | currency }} VNĐ
+                  {{ booking && booking.totalTicket | currency }} VNĐ
                 </div>
               </div>
               <div class="d-flex content-row content-random">
@@ -69,13 +83,15 @@
                 </div>
               </div>
               <div class="d-flex content-row">
-                <div class="h4 text-white font-weight-bold">Mã xác nhận:</div>
+                <div class="h4 text-white font-weight-bold">
+                  {{ $t("VerifyCode") }}:
+                </div>
                 <div class="h4 text-white">
                   <el-input v-model="confirmText"></el-input>
                 </div>
               </div>
               <div v-if="isError" class="h5 mt-2" style="color: #dd474f">
-                Mã xác nhận không chính xác
+                {{ $t("VerifyCodeNotSuccess") }}
               </div>
               <div class="d-flex content-row justify-content-end">
                 <div>
@@ -84,7 +100,7 @@
                     class="btn-default mr-2"
                     style="width: auto"
                   >
-                    Thanh toán
+                    {{ $t("Payment") }}
                   </el-button>
                 </div>
                 <div>
@@ -93,7 +109,7 @@
                     class="btn-default"
                     style="width: auto"
                   >
-                    Hủy
+                    {{ $t("Cancel") }}
                   </el-button>
                 </div>
               </div>
@@ -103,13 +119,18 @@
       </div>
       <el-dialog
         id="dialogCustom"
-        title="Đặt vé thành công"
+        :title="$t('ConfirmPayment')"
         :visible.sync="dialogVisible"
       >
-        <span>Bạn có xác nhận thanh toán.</span>
+        <span style="word-break: break-word">{{
+          $t("ConfirmPaymentContent")
+        }}</span>
         <span slot="footer" class="dialog-footer">
-          <el-button class="btn-default" style="width: auto" @click="onDone()"
-            >Xác nhận</el-button
+          <el-button
+            class="btn-default"
+            style="width: auto"
+            @click="onDone()"
+            >{{ $t("Confirm") }}</el-button
           >
         </span>
       </el-dialog>
@@ -127,6 +148,8 @@ export default {
     ...mapState({
       bill: (state) => state.bill.bill,
       booking: (state) => state.booking.booking,
+      accountInfo: (state) => state.account.accountInfo,
+      account: (state) => state.account.account,
     }),
     isError() {
       if (this.isSubmit) {
@@ -154,6 +177,9 @@ export default {
   },
   async created() {
     this.randomString(10);
+    setTimeout(() => {
+      console.log(this.booking);
+    }, 500);
   },
   watch: {
     confirmText: {
@@ -182,78 +208,60 @@ export default {
     },
     onConfirm() {
       this.isSubmit = true;
-      if (!this.errors && this.confirmText !== "") {
+      if (
+        !this.errors &&
+        this.confirmText !== "" &&
+        this.confirmText === this.randomText
+      ) {
         this.dialogVisible = true;
       }
     },
     formatTime(value, type) {
-      return moment(value).format(type);
+      return moment(value).utc().format(type);
     },
     onCancel() {
       this.$router.push(this.localePath(`/home`));
     },
-    onDone() {
-      this.$router.push(this.localePath(`/account`));
+    async onDone() {
+      try {
+        const response = await this.$axios.$post(
+          `user/bill/store`,
+          {
+            price: this.booking.totalTicket,
+            status: "success",
+            ticket_id: this.booking.ticketDetails.id,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + this.account.token,
+            },
+          }
+        );
+        if (response.status) {
+          this.onAlertMessageBox("success", $t("PaymentSuccess"));
+          this.dialogVisible = false;
+          setTimeout(() => {
+            this.$router.push(this.localePath(`/home`));
+          }, 2000);
+        } else {
+          this.$message.error(response.message);
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
     },
-    submitModal() {
-      const form = { ...state.bill };
-
-      axios
-        .post(`user/bill/store`, form)
-        .then((res) => {
-          if (res.status === 200) {
-            const data = res.data.data.bill;
-            console.log(data);
-            alert("Success!");
-            // this.$router.push(this.localePath(`/booking?${movie.name}`));
-          }
-        })
-        .catch(() => {});
-    },
-    fetchData() {
-      // Movie
-      axios
-        .get(`user/movie/show/${id.value}`)
-        .then((res) => {
-          if (res.status === 200) {
-            let data = res.data.data.movie;
-            state.bill.movie = { ...data };
-          }
-        })
-        .catch(() => {});
-
-      // Schedule
-      axios
-        .get(`user/schedule/show/${id.value}`)
-        .then((res) => {
-          if (res.status === 200) {
-            let data = res.data.data.schedule;
-            state.bill.schedule = { ...data };
-          }
-        })
-        .catch(() => {});
-
-      // User
-      axios
-        .get(`user/show/${id.value}`)
-        .then((res) => {
-          if (res.status === 200) {
-            let data = res.data.data.user;
-            state.bill.user = { ...data };
-          }
-        })
-        .catch(() => {});
-
-      // Coupon
-      axios
-        .get(`user/coupon/show/${id.value}`)
-        .then((res) => {
-          if (res.status === 200) {
-            let data = res.data.data.coupon;
-            state.bill.coupon = { ...data };
-          }
-        })
-        .catch(() => {});
+    onAlertMessageBox(type, message) {
+      const _this = this;
+      _this.$message({
+        message: message,
+        type: type,
+      });
     },
   },
 };

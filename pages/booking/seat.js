@@ -111,7 +111,7 @@ export const seatDataConfig = [
       },
       {
         value: "B3",
-        status: "sold",
+        status: "available",
         price: 80000
       },
       {
@@ -259,7 +259,7 @@ export const seatDataConfig = [
       },
       {
         value: "C14",
-        status: "sold",
+        status: "available",
         price: 80000
       },
       {
