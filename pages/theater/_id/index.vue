@@ -46,49 +46,77 @@
                 </div>
               </div>
             </div>
-            <div class="page-header">{{ $t("ShowTimes") }}</div>
-            <div
-              class="schedule mb-4 mt-2"
-              v-for="(item, index) in schedule"
-              :key="index"
-            >
-              <b-row class="mx-0">
+            <!-- *** Phòng *** -->
+            <div class="page-header">{{ $t("Room") }}</div>
+            <div class="schedule mb-4 mt-2">
+              <b-row class="w-100 mx-0">
                 <b-col
-                  cols="12"
-                  class="text-left pt-4 h4 font-weight-bold text-white"
-                  style="font-family: BalooTammudu2"
+                  v-for="(itemRoom, indexRoom) in theater.room"
+                  :key="`Room ${indexRoom}`"
+                  lg="3"
+                  md="4"
+                  cols="6"
+                  class="schedule-box"
                 >
-                  {{ formatTime(item.date, "DD/MM/YYYY") }}
+                  <el-button
+                    v-on:click="onSelectedRoom(itemRoom)"
+                    class="w-100 mt-4 p-3 button-time"
+                    v-bind:class="{
+                      roomActive: itemRoom.name === selectedRoom.name,
+                    }"
+                  >
+                    {{ itemRoom.name }}
+                  </el-button>
                 </b-col>
-                <b-row
-                  class="w-100 mx-0"
-                  v-for="(itemMovie, indexMovie) in item.movie"
-                  :key="indexMovie"
-                >
+              </b-row>
+            </div>
+
+            <!-- *** Lịch chiếu theo phòng *** -->
+            <div v-if="!emptyRoom">
+              <div class="page-header">{{ $t("ShowTimes") }}</div>
+              <div
+                class="schedule mb-4 mt-2"
+                v-for="(item, index) in schedule"
+                :key="index"
+              >
+                <b-row class="mx-0">
                   <b-col
                     cols="12"
+                    class="text-left pt-4 h4 font-weight-bold text-white"
                     style="font-family: BalooTammudu2"
-                    class="h4 font-weight-bold text-white pt-4 pb-2"
                   >
-                    {{ itemMovie.name }}
+                    {{ formatTime(item.date, "DD/MM/YYYY") }}
                   </b-col>
-                  <b-col
-                    v-for="(itemTime, indexTime) in itemMovie.time"
-                    :key="indexTime"
-                    lg="3"
-                    md="4"
-                    cols="6"
-                    class="schedule-box"
+                  <b-row
+                    class="w-100 mx-0"
+                    v-for="(itemMovie, indexMovie) in item.movie"
+                    :key="indexMovie"
                   >
-                    <el-button
-                      v-on:click="onBooking(itemMovie, itemTime)"
-                      class="w-100 mt-4 p-3 button-time"
-                      >{{ formatTime(itemTime.timeStart, "HH:mm a") }} -
-                      {{ formatTime(itemTime.timeEnd, "HH:mm a") }}</el-button
+                    <b-col
+                      cols="12"
+                      style="font-family: BalooTammudu2"
+                      class="h4 font-weight-bold text-white pt-4 pb-2"
                     >
-                  </b-col>
+                      {{ itemMovie.name }}
+                    </b-col>
+                    <b-col
+                      v-for="(itemTime, indexTime) in itemMovie.time"
+                      :key="indexTime"
+                      lg="3"
+                      md="4"
+                      cols="6"
+                      class="schedule-box"
+                    >
+                      <el-button
+                        v-on:click="onBooking(itemMovie, itemTime)"
+                        class="w-100 mt-4 p-3 button-time"
+                        >{{ formatTime(itemTime.timeStart, "HH:mm a") }} -
+                        {{ formatTime(itemTime.timeEnd, "HH:mm a") }}</el-button
+                      >
+                    </b-col>
+                  </b-row>
                 </b-row>
-              </b-row>
+              </div>
             </div>
           </div>
         </div>
@@ -99,12 +127,18 @@
 <script>
 import { mapState } from "vuex";
 import moment from "moment";
+import * as _ from "lodash";
+
 export default {
   components: {},
   computed: {
     ...mapState({
       booking: (state) => state.booking.booking,
+      account: (state) => state.account.account,
     }),
+    emptyRoom() {
+      return _.isEmpty(this.selectedRoom);
+    },
   },
   watch: {
     booking: {
@@ -275,11 +309,56 @@ export default {
           ],
         },
       ],
+      selectedRoom: {},
+      scheduleData: [],
     };
   },
-  async created() {},
+  async created() {
+    setTimeout(async () => {
+      try {
+        /// *** theater details *** ///
+        const response = await this.$axios.$get(
+          `user/theater/show/${this.booking.theater.id}`
+        );
+        console.log("response:", response);
+        if (response.status) {
+          this.theater = response.data.theater;
+          await this.$store.commit("booking/SET_BOOKING", {
+            ...this.booking,
+            theater: {
+              ...response.data.theater,
+            },
+          });
+        } else {
+          this.$message.error(response.message);
+        }
+
+        /// *** Schedule *** ///
+        const responseSchedule = await this.$axios.$get(`/user/schedule/all`, {
+          headers: {
+            Authorization: "Bearer " + this.account.token,
+          },
+        });
+        console.log("responseSchedule:", response);
+        if (responseSchedule.status) {
+          this.scheduleData = responseSchedule.data.schedule.data;
+        } else {
+          this.$message.error(responseSchedule.message);
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log("Error:", error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
+    }, 500);
+  },
   mounted() {},
   methods: {
+    getData() {},
     async onBooking(movie, time) {
       console.log(this.booking, movie, time);
       await this.$store.commit("booking/SET_BOOKING", {
@@ -295,6 +374,22 @@ export default {
     },
     formatTime(value, type) {
       return moment(value).format(type);
+    },
+    onSelectedRoom(value) {
+      console.log(value);
+      this.selectedRoom = value;
+      const keyIndex = _.findIndex(
+        [...this.scheduleData] || [],
+        (o) => o.room?.id === value.id && o.room?.theater_id === this.theater.id
+      );
+      console.log(keyIndex);
+    },
+    onAlertMessageBox(type, message) {
+      const _this = this;
+      _this.$message({
+        message: message,
+        type: type,
+      });
     },
   },
 };
@@ -350,6 +445,9 @@ export default {
         color: #dd474f;
       }
     }
+  }
+  .roomActive {
+    color: #dd474f !important;
   }
   .button-time {
     background: url("assets/images/Background_Sub_Menu.png") !important;

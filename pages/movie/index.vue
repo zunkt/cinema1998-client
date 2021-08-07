@@ -116,6 +116,25 @@
           todayItemColor="rgb(150, 0, 0, .1)"
           choosedDatePos="center"
         ></vue-horizontal-calendar>
+        <div v-if="haveSchedule">
+          <b-row class="w-100 mx-0">
+            <b-col
+              v-for="(itemMovie, indexMovie) in scheduleData"
+              :key="indexMovie"
+              lg="3"
+              md="4"
+              cols="6"
+              class="schedule-box"
+            >
+              <el-button
+                class="w-100 mt-4 p-3 button-time"
+                v-on:click="onBooking(itemMovie)"
+                >{{ formatTime(itemMovie.time_start, "HH:mm a") }} -
+                {{ formatTime(itemMovie.time_end, "HH:mm a'") }}</el-button
+              >
+            </b-col>
+          </b-row>
+        </div>
         <span slot="footer" class="dialog-footer">
           <el-button
             class="btn-default"
@@ -143,11 +162,14 @@ export default {
       movieDetails: (state) => state.movie.movieDetails,
       subtitleData: (state) => state.masterData.subtitleData,
       categoryData: (state) => state.masterData.categoryData,
+      account: (state) => state.account.account,
     }),
   },
   data() {
     return {
       dialogVisible: false,
+      haveSchedule: false,
+      scheduleData: [],
     };
   },
   async created() {
@@ -192,11 +214,72 @@ export default {
         return value;
       }
     },
+    formatTime(value, type) {
+      return moment(value).utc().format(type);
+    },
     getDate(date) {
       return moment(date).format("DD/MM/YYYY") || "";
     },
     onSelectedDate(value) {
-      console.log(value);
+      console.log(value.dateFormat);
+      console.log(this.movieDetails);
+      const keyIndex = _.findIndex(
+        [...this.movieDetails.schedule] || [],
+        (o) => o.date_start === value.dateFormat
+      );
+      console.log(keyIndex);
+      if (keyIndex > -1) {
+        this.haveSchedule = true;
+        this.scheduleData = _.filter(
+          [...this.movieDetails.schedule] || [],
+          (o) => o.date_start === value.dateFormat
+        );
+      } else {
+        this.scheduleData = [];
+      }
+    },
+    async onBooking(value) {
+      console.log("schedule :", value);
+      console.log("theater", this);
+      try {
+        const response = await this.$axios.$get(
+          `/user/room/show/${value.room_id}`,
+          {
+            headers: {
+              Authorization: "Bearer " + this.account.token,
+            },
+          }
+        );
+        console.log(response);
+        if (response.status) {
+          const seatGroupbySchedule =
+            _.filter(
+              [...response.data.room.seat] || [],
+              (o) => o.schedule_id === value.id
+            ) || [];
+          await this.$store.commit("booking/SET_BOOKING", {
+            theater: response.data.room.theater,
+            schedule: value,
+            movie: this.movieDetails,
+            seatBooked: seatGroupbySchedule,
+          });
+          setTimeout(() => {
+            this.$router.push(
+              this.localePath(`/booking?${this.movieDetails.name}`)
+            );
+          }, 500);
+        } else {
+          this.$message.error(response.message);
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
     },
   },
 };

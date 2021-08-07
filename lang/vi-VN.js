@@ -28,6 +28,18 @@ export default {
   Cancel: "Hủy",
   SeeDetails: "Xem chi tiết",
   MovieSchedule: "Lịch phim",
+  Room: "Phòng",
+  YouAreBooked: "Bạn đã đặt",
+  TotalMoney: "Tổng tiền",
+  Payment: "Thanh toán",
+  Confirm: "Xác nhận",
+  Time: "Thời gian",
+  VerifyCode: "Mã xác nhận",
+  VerifyCodeNotSuccess: "Mã xác nhận không chính xác",
+  ConfirmPayment: "Xác nhận thanh toán",
+  ConfirmPaymentContent:
+    "Bạn có đồng ý với thông tin bên trên và xác nhận thanh toán.",
+  PaymentSuccess: "Thanh toán thành công",
   Errors: {
     EmailRequired: "Vui lòng nhập Email",
     EmailInvalid: "Email không hợp lệ"
@@ -41,6 +53,15 @@ export default {
     Booking: "Đặt vé",
     MovieContent: "Nội dung phim",
     MovieNowShowing: "Phim đang chiếu",
-    MovieWillShowing: "Phim sắp chiếu"
+    MovieWillShowing: "Phim sắp chiếu",
+    TicketInformation: "Thông tin vé",
+    TicketInfo1: "Hàng E , F sẻ có giá vé là 95.000 VNĐ cho mỗi vé.",
+    TicketInfo2: "Hàng G sẻ có giá vé là 90.000 VNĐ cho mỗi vé.",
+    TicketInfo3: "Các hàng khác có giá vé là 80.000 VNĐ cho mỗi vé.",
+    TicketInfo4:
+      "Vé sau khi mua sẻ được đổi trả trước 8h giờ phim chiếu. Sau thời gian trên Cinema 1998 không chịu trách nhiệm đổi trả.",
+    SeatConfirm1: "Bạn có xác nhận mua",
+    SeatConfirm2: "vé với số tiền",
+    BillInformation: "Thông tin hóa đơn"
   }
 };
