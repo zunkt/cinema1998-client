@@ -266,37 +266,40 @@ export default {
     },
     async onRegister() {
       const _this = this;
-      await _this.$axios
-        .$post(`/user/auth/register`, {
+      try {
+        const response = await _this.$axios.$post(`/user/auth/register`, {
           email: _this.registerForm.email,
           name: _this.registerForm.fullName,
           full_name: _this.registerForm.fullName,
+          identityNumber: _this.registerForm.identityNumber,
+          address: _this.registerForm.address,
           phone: _this.registerForm.phone,
           password: _this.registerForm.password,
-        })
-        .then(async (response) => {
-          console.log("response", response);
-          if (response.code === 200) {
-            // await _this.$store.commit("account/SET_ACCOUNT", {
-            //   email: _this.loginForm?.email,
-            //   token: response.data?.token,
-            //   isLoggedIn: true,
-            // });
-            await this.onAlertMessageBox(
-              "success",
-              "Đăng ký thành công thành công"
-            );
-            _this.$router.push(_this.localePath("/account"));
-          }
-        })
-        .catch(async (err) => {
-          // await _this.$store.commit("account/SET_ACCOUNT", {
-          //   email: _this.loginForm?.email,
-          //   token: "",
-          //   isLoggedIn: false,
-          // });
-          this.onAlertMessageBox("error", err?.message || err);
         });
+        if (response.status) {
+          await this.onAlertMessageBox(
+            "success",
+            "Đăng ký thành công thành công"
+          );
+          setTimeout(() => {
+            _this.$router.push(_this.localePath("/account"));
+          }, 500);
+        } else {
+          console.log(response.message);
+          this.onAlertMessageBox(
+            "error",
+            response.message || "Response message null"
+          );
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();

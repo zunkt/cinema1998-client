@@ -20,5 +20,27 @@ export default {
     "Với trang này, bạn sẽ quản lý được tất cả thông tin tài khoản của mình.",
   Details: "Chi tiết",
   ChangePassword: "Đổi mật khẩu",
-  Logout: "Đăng xuất"
+  Logout: "Đăng xuất",
+  Address: "Địa chỉ",
+  ForgotPassword: "Quên mật khẩu",
+  ForgotPasswordDescription: "Nhập email để gửi mã đổi mật khẩu đến email",
+  SendRequest: "Gửi yêu cầu",
+  Cancel: "Hủy",
+  SeeDetails: "Xem chi tiết",
+  MovieSchedule: "Lịch phim",
+  Errors: {
+    EmailRequired: "Vui lòng nhập Email",
+    EmailInvalid: "Email không hợp lệ"
+  },
+  MovieScreen: {
+    Director: "Đạo diễn",
+    Actor: "Diễn viên",
+    Category: "Thể loại",
+    ReleaseDate: "Khởi chiếu",
+    Subtitle: "Phụ đề",
+    Booking: "Đặt vé",
+    MovieContent: "Nội dung phim",
+    MovieNowShowing: "Phim đang chiếu",
+    MovieWillShowing: "Phim sắp chiếu"
+  }
 };

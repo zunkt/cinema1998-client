@@ -42,13 +42,15 @@
                 {{ $t("Hello") }} {{ accountInfo.full_name }},
               </div>
               <div class="page-row">
+                {{ $t("Address") }} :
+                <span class="page-info">
+                  {{ accountInfo.address }}
+                </span>
+              </div>
+              <div class="page-row">
                 {{ $t("AccountDescription") }}
               </div>
               <!-- <div class="page-row">
-                CMND :
-                <span class="page-info"> 2214***12 </span>
-              </div>
-              <div class="page-row">
                 Ngày sinh :
                 <span class="page-info"> 10/1/1998 </span>
               </div>
@@ -127,6 +129,7 @@ export default {
           Authorization: "Bearer " + this.account.token,
         },
       });
+      console.log("response :", response);
       if (response.code === 200) {
         await this.$store.commit(
           "account/SET_ACCOUNT_INFO",

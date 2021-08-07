@@ -286,3 +286,22 @@ export const categoryData = [
     value: "erotic"
   }
 ];
+
+export const advertisementSlide = [
+  {
+    backgroundImage:
+      "https://images.hdqwalls.com/wallpapers/shazam-movie-new-poster-vd.jpg"
+  },
+  {
+    backgroundImage:
+      "https://swall.teahub.io/photos/small/180-1800392_bollywood-movies-poster-background-hd.jpg"
+  },
+  {
+    backgroundImage:
+      "https://www.10wallpaper.com/wallpaper/3840x2400/1905/2019_Dark_Phoenix_4K_Film_Poster_3840x2400.jpg"
+  },
+  {
+    backgroundImage:
+      "https://coolwallpapers.me/picsup/2872372-the-girl-with-the-dragon-tattoo-rooney-mara-david-fincher-movies-daniel-craig-stieg-larsson___movie-wallpapers.jpg"
+  }
+];

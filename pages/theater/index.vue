@@ -28,7 +28,7 @@
               </div>
             </div>
             <div class="theater">
-              <b-row>
+              <b-row class="mx-0">
                 <b-col
                   v-for="(item, index) in theater[active]"
                   :key="index"

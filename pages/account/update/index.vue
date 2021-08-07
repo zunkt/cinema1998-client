@@ -180,25 +180,22 @@ export default {
     };
   },
   async created() {
-    const _this = this;
-    _this.registerForm = {
-      email: _this.accountInfo.email,
-      password: "",
-      confirmPassword: "",
-      phone: _this.accountInfo.phone,
-      fullName: _this.accountInfo.full_Name,
+    this.registerForm = {
+      email: this.accountInfo.email,
+      phone: this.accountInfo.phone,
+      fullName: this.accountInfo.full_name,
       birthday: "10/1/1998",
-      identityNumber: "2214334334",
-      address: "63 VVT",
+      identityNumber: this.accountInfo.identityNumber,
+      address: this.accountInfo.address,
+      password: this.accountInfo.password,
     };
   },
   watch: {},
   methods: {
     submitForm(formName) {
-      const _this = this;
-      _this.$refs[formName].validate((valid) => {
+      this.$refs[formName].validate((valid) => {
         if (valid) {
-          _this.onUpdate();
+          this.onUpdate();
         } else {
           console.log("error submit!!");
           return false;
@@ -206,38 +203,42 @@ export default {
       });
     },
     async onUpdate() {
-      const _this = this;
-      await _this.$axios
-        .$post(`/user/user/update`, {
-          headers: {
-            Authorization: "Bearer " + _this.account.token,
+      try {
+        const response = await this.$axios.$post(
+          `/user/user/update`,
+          {
+            email: this.registerForm.email,
+            name: this.registerForm.fullName,
+            full_name: this.registerForm.fullName,
+            phone: this.registerForm.phone,
+            address: this.registerForm.address,
+            identityNumber: this.registerForm.identityNumber,
+            birthday: this.registerForm.birthday,
           },
-          email: _this.registerForm.email,
-          name: _this.registerForm.fullName,
-          full_name: _this.registerForm.fullName,
-          phone: _this.registerForm.phone,
-          password: _this.registerForm.password,
-        })
-        .then(async (response) => {
-          console.log("response", response);
-          if (response.code === 200) {
-            await this.onAlertMessageBox(
-              "success",
-              "Cập nhật thành công thành công"
-            );
-            _this.$router.push(_this.localePath("/account"));
+          {
+            headers: {
+              Authorization: "Bearer " + this.account.token,
+            },
           }
-        })
-        .catch(async (err) => {
-          await _this.$store.commit("account/SET_ACCOUNT", {
-            email: "",
-            token: "",
-            isLoggedIn: "",
-          });
-          console.log(_this.account);
-          this.onAlertMessageBox("error", err?.message || err);
-          _this.$router.push(_this.localePath("/account"));
-        });
+        );
+        if (response.status) {
+          await this.onAlertMessageBox(
+            "success",
+            "Cập nhật thành công thành công"
+          );
+          this.$router.push(this.localePath("/account"));
+        } else {
+          this.onAlertMessageBox(response.message || "Response message null");
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
     },
     onCancel() {
       const _this = this;

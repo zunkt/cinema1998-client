@@ -9421,6 +9421,13 @@ vue-google-autocomplete@^1.1.0:
   resolved "https://registry.yarnpkg.com/vue-google-autocomplete/-/vue-google-autocomplete-1.1.1.tgz#2d10d3cc13640c698e44540a3d5a7aca2445b7db"
   integrity sha512-zYh4J+GmKLf8Sni/zNR9YzsTxAXo9p6N/D4eTpK8MtCHqtMKuVJXsHe7nHiYxMl9O+CjtifAUYvDnWBBqex+gg==
 
+vue-horizontal-calendar@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/vue-horizontal-calendar/-/vue-horizontal-calendar-0.9.0.tgz#4a544e62cbd506164cbc252009b1d11f0b28dc01"
+  integrity sha512-aev+PnkkJ1tL7wgaiENJEEwaoMHB7vWRn9rpfO3klA/rAlVX2seMFdWW2w8iiMHItTwnBQgahKRFpZksON+aVg==
+  dependencies:
+    vue "^2.6.10"
+
 vue-hot-reload-api@^2.3.0:
   version "2.3.4"
   resolved "https://registry.yarnpkg.com/vue-hot-reload-api/-/vue-hot-reload-api-2.3.4.tgz#532955cc1eb208a3d990b3a9f9a70574657e08f2"
@@ -9518,6 +9525,11 @@ vue-youtube-embed@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/vue-youtube-embed/-/vue-youtube-embed-2.2.2.tgz#e4fc27bc09ecd77488e6709f7c6694585c972d2d"
   integrity sha512-l/EJuFMRK43AN73N+qxJnN0LB3uPl2xAghmr3dCvODWGCRWGjmGfrHaOtD93fu9J4co+CZLv1KP3akAsldC1aw==
+
+vue@^2.6.10:
+  version "2.6.14"
+  resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.14.tgz#e51aa5250250d569a3fbad3a8a5a687d6036e235"
+  integrity sha512-x2284lgYvjOMj3Za7kqzRcUSxBboHqtgRE2zlos1qWaOye5yUmHn42LB1250NJBLRwEcdrB0JRwyPTEPhfQjiQ==
 
 vue@^2.6.12:
   version "2.6.12"

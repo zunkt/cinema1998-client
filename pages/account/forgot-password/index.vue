@@ -7,9 +7,9 @@
             class="d-lg-flex pb-4 px-0 flex-column align-items-center w-100"
             style="margin-top: 120px; min-height: 100vh"
           >
-            <div class="page-title">Quên mặt khẩu</div>
+            <div class="page-title">{{ $t("ForgotPassword") }}</div>
             <div class="page-description">
-              Nhập email để gửi mã đổi mật khẩu đến email
+              {{ $t("ForgotPasswordDescription") }}
             </div>
             <div>
               <el-form
@@ -39,11 +39,11 @@
                     class="btn-booking"
                     type="primary"
                     @click="submitForm('requestEmailForm')"
-                    >Gửi yêu cầu</el-button
+                    >{{ $t("SendRequest") }}</el-button
                   >
-                  <el-button class="btn-cancel" @click="onCancel()"
-                    >Hủy</el-button
-                  >
+                  <el-button class="btn-cancel" @click="onCancel()">{{
+                    $t("Cancel")
+                  }}</el-button>
                 </el-form-item>
               </el-form>
             </div>
@@ -55,7 +55,6 @@
 </template>
 <script>
 import { mapState } from "vuex";
-
 export default {
   components: {},
   computed: {
@@ -72,12 +71,12 @@ export default {
         email: [
           {
             required: true,
-            message: "Vui lòng nhập Email",
+            message: this.$t("Errors.EmailRequired"),
             trigger: "blur",
           },
           {
             type: "email",
-            message: "Email không hợp lệ",
+            message: this.$t("Errors.Invalid"),
             trigger: ["blur", "change"],
           },
         ],

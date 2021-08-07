@@ -86,7 +86,7 @@
             </div>
             <div slot="reference" class="menu--title">Thành viên</div>
           </el-popover> -->
-          <div class="menu--title" @click="goToPage('/account/policy')">
+          <div class="menu--title" @click="goToPage('/policy')">
             {{ $t("Benefit") }}
           </div>
         </el-col>

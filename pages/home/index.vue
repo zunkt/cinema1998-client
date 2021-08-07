@@ -28,7 +28,7 @@
             >
               <div
                 class="slide-carousel__item"
-                :style="`background-image: url(${itemCarousel.url}); background-size: cover;`"
+                :style="`background-image: url(${itemCarousel.backgroundImage}); background-size: cover;`"
               ></div>
             </el-carousel-item>
           </el-carousel>
@@ -53,7 +53,7 @@
                 :key="index"
               >
                 <el-card
-                  :style="`background-image: url(${item.imgUrl}); background-size: cover;`"
+                  :style="`background-image: url(${item.imageText}); background-size: cover;`"
                   shadow="hover"
                   class="card-selection"
                 >
@@ -62,7 +62,9 @@
             </swiper>
           </div>
         </div>
-        <div class="text-selection">Phim đang chiếu</div>
+        <div class="text-selection">
+          {{ $t("MovieScreen.MovieNowShowing") }}
+        </div>
         <div class="d-flex justify-content-center w-100">
           <div class="selection-content px-2">
             <swiper
@@ -80,7 +82,7 @@
                 :key="index"
               >
                 <el-card
-                  :style="`background-image: url(${item.imgUrl}); background-size: cover;`"
+                  :style="`background-image: url(${item.imageText}); background-size: cover;`"
                   shadow="hover"
                   class="card-selection"
                 >
@@ -89,7 +91,9 @@
             </swiper>
           </div>
         </div>
-        <div class="text-selection">Phim sắp chiếu</div>
+        <div class="text-selection">
+          {{ $t("MovieScreen.MovieWillShowing") }}
+        </div>
         <div class="d-flex justify-content-center w-100">
           <div class="selection-content px-2">
             <swiper
@@ -107,7 +111,7 @@
                 :key="`movieUpComing ${index} ${item.id}`"
               >
                 <el-card
-                  :style="`background-image: url(${item.imgUrl}); background-size: cover;`"
+                  :style="`background-image: url(${item.imageText}); background-size: cover;`"
                   shadow="hover"
                   class="card-selection"
                 >
@@ -136,19 +140,24 @@
         :player-height="windowWidth < 414 ? 366 : 480"
       ></youtube>
       <div class="btn-action">
-        <el-button class="btn-booking" @click="onBooking">Đặt vé</el-button>
-        <el-button class="btn-booking" @click="onSeeMovieDetail"
-          >Xem chi tiết</el-button
-        >
-        <el-button class="btn-cancel" @click="onCloseDialog">Hủy</el-button>
+        <el-button class="btn-booking" @click="onBooking">{{
+          $t("MovieScreen.Booking")
+        }}</el-button>
+        <el-button class="btn-booking" @click="onSeeMovieDetail">{{
+          $t("SeeDetails")
+        }}</el-button>
+        <el-button class="btn-cancel" @click="onCloseDialog">{{
+          $t("Cancel")
+        }}</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 <script>
 import HomeNavbar from "@/components/HomeNavbar";
+import moment from "moment";
 import { mapState } from "vuex";
-import { moviesDataLocal } from "@/pages/data";
+import { moviesDataLocal, advertisementSlide } from "@/pages/data";
 export default {
   components: {
     HomeNavbar,
@@ -204,20 +213,7 @@ export default {
           },
         },
       },
-      dataSlide: [
-        {
-          url: "https://wallpapercave.com/wp/wp1945912.jpg",
-        },
-        {
-          url: "https://wallpapercave.com/wp/wp1946040.jpg",
-        },
-        {
-          url: "https://www.bhmpics.com/download/fury_movie_poster-1920x1080.jpg",
-        },
-        {
-          url: "https://wallpapercave.com/wp/0RQMsOD.jpg",
-        },
-      ],
+      dataSlide: advertisementSlide,
       player: "",
       movieSelection: [],
       movieUpComing: [],
@@ -235,6 +231,7 @@ export default {
     _this.movieUpComing = movieUpComingSort;
     await _this.$store.commit("movie/SET_MOVIES_DATA", moviesDataLocal);
     this.getData();
+    console.log(moment().format());
   },
   mounted() {
     this.getData();
@@ -243,35 +240,36 @@ export default {
     moviesData: {
       immediate: true,
       handler(newValue, oldValue) {
-        console.log("mapData", this.moviesData);
         this.movieSelection =
           _.filter([...newValue] || [], (o) => o.type == "selection") || [];
         this.movieNowShowing =
           _.filter([...newValue] || [], (o) => o.type == "showing") || [];
         this.movieUpComing =
           _.filter([...newValue] || [], (o) => o.type == "up-coming") || [];
-        // this.movieSelection = newValue;
-        // this.movieNowShowing = newValue;
-        // this.movieUpComing = newValue;
       },
     },
   },
   methods: {
     async getData() {
-      const response = await this.$axios.$get(`/user/movie/all`, {
-        headers: {
-          Authorization:
-            "Bearer " +
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xNjQuOTAuMTQxLjQ2XC9hcGlcL3VzZXJcL2F1dGhcL2xvZ2luIiwiaWF0IjoxNjI3Mzg1ODkyLCJuYmYiOjE2MjczODU4OTIsImp0aSI6Im9kMk5oZ041eHdIZmpCbmkiLCJzdWIiOjEsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.g7rrzYbVIoA6YeVgalB-wrft4vfOvDP5xY6UEdNEwlE",
-        },
-      });
-      if (response.status) {
-        // await this.$store.commit(
-        //   "movie/SET_MOVIES_DATA",
-        //   response?.data?.movie?.data || []
-        // );
-      } else {
-        this.$message.error(response.message);
+      try {
+        const response = await this.$axios.$get(`/user/movie/all`);
+        console.log(response);
+        if (response.status) {
+          await this.$store.commit(
+            "movie/SET_MOVIES_DATA",
+            response?.data?.movie?.data || []
+          );
+        } else {
+          this.$message.error(response.message);
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
       }
     },
     onSwiper(swiper) {
@@ -287,7 +285,7 @@ export default {
     },
     openTrailer(item) {
       const _this = this;
-      _this.youtubeId = item.ytbId;
+      _this.youtubeId = item.trailer_url;
       _this.dialogVisible = true;
       _this.movieDetails = item;
     },

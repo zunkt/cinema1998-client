@@ -52,7 +52,7 @@
               v-for="(item, index) in schedule"
               :key="index"
             >
-              <b-row>
+              <b-row class="mx-0">
                 <b-col
                   cols="12"
                   class="text-left pt-4 h4 font-weight-bold text-white"
@@ -61,7 +61,7 @@
                   {{ formatTime(item.date, "DD/MM/YYYY") }}
                 </b-col>
                 <b-row
-                  class="w-100"
+                  class="w-100 mx-0"
                   v-for="(itemMovie, indexMovie) in item.movie"
                   :key="indexMovie"
                 >
@@ -277,9 +277,7 @@ export default {
       ],
     };
   },
-  async created() {
-    console.log(moment().format());
-  },
+  async created() {},
   mounted() {},
   methods: {
     async onBooking(movie, time) {

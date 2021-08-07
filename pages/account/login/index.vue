@@ -157,8 +157,7 @@ export default {
           password: _this.loginForm?.password,
         })
         .then(async (response) => {
-          console.log(response);
-          if (response.code === 200) {
+          if (response.code === 200 && response.status) {
             await _this.$store.commit("account/SET_ACCOUNT", {
               email: _this.loginForm?.email,
               token: response.data?.token,
@@ -166,6 +165,8 @@ export default {
             });
             await this.onAlertMessageBox("success", "Đăng nhập thành công");
             _this.$router.push(_this.localePath("/account"));
+          } else {
+            this.onAlertMessageBox("error", response.message);
           }
         })
         .catch(async (err) => {

@@ -7,7 +7,7 @@
       >
         <div
           class="page-header"
-          :style="`background-image: url('${movieDetails.backgroundImg}');`"
+          :style="`background-image: url('${movieDetails.backgroundImage}');`"
         >
           <div class="header-overlay">
             <b-row class="w-100 h-100 header-container">
@@ -17,7 +17,7 @@
                 class="header-poster-card-container pt-5 pt-lg-0 px-5 px-lg-0"
               >
                 <div
-                  :style="`background-image: url('${movieDetails.imgUrl}');`"
+                  :style="`background-image: url('${movieDetails.imageText}');`"
                   class="header-poster-card"
                 ></div>
               </b-col>
@@ -30,17 +30,19 @@
                   <div class="name-style">{{ movieDetails.name }}</div>
                   <div>
                     <div class="content-tile">
-                      Đạo diễn:
+                      {{ $t("MovieScreen.Director") }}:
                       <span class="content-label">{{
-                        movieDetails.directors
+                        movieDetails.director
                       }}</span>
                     </div>
                     <div class="content-tile">
-                      Diễn viên:
-                      <span class="content-label">{{ movieDetails.cast }}</span>
+                      {{ $t("MovieScreen.Actor") }}:
+                      <span class="content-label">{{
+                        movieDetails.actor
+                      }}</span>
                     </div>
                     <div class="content-tile">
-                      Thể loại:
+                      {{ $t("MovieScreen.Category") }}:
                       <span class="content-label">
                         <span
                           v-for="(item, index) in movieDetails.category"
@@ -55,21 +57,25 @@
                       </span>
                     </div>
                     <div class="content-tile">
-                      Khởi chiếu:
+                      {{ $t("MovieScreen.ReleaseDate") }}:
                       <span class="content-label">{{
-                        movieDetails.releaseDate
+                        getDate(movieDetails.releaseDate)
                       }}</span>
                     </div>
                     <div class="content-tile">
-                      Phụ đề:
+                      {{ $t("MovieScreen.Subtitle") }}:
                       <span class="content-label">
                         <span
-                          v-for="(item, index) in movieDetails.subtitle"
+                          v-for="(item, index) in movieDetails.language"
                           :key="index"
                         >
                           {{ mapLabel(item, subtitleData) }}
                           <span
-                            v-if="index !== movieDetails.subtitle.length - 1"
+                            v-if="
+                              index !==
+                              (movieDetails.language &&
+                                movieDetails.language.length - 1)
+                            "
                           >
                             -
                           </span>
@@ -78,26 +84,60 @@
                     </div>
                   </div>
                   <div class="btn-action justify-content-start pl-0">
-                    <el-button class="btn-booking">Đặt vé</el-button>
+                    <el-button
+                      class="btn-booking"
+                      @click="dialogVisible = true"
+                      >{{ $t("MovieScreen.Booking") }}</el-button
+                    >
                   </div>
                 </div>
               </b-col>
             </b-row>
           </div>
         </div>
-        <div class="content-movie-label px-5 px-lg-0">Nội dung phim</div>
+        <div class="content-movie-label px-5 px-lg-0">
+          {{ $t("MovieScreen.MovieContent") }}
+        </div>
         <div class="content-movie px-5 px-lg-0">
           {{ movieDetails.descriptionContent }}
         </div>
       </div>
+
+      <el-dialog
+        id="dialogCustom"
+        width="80%"
+        :title="$t('MovieSchedule')"
+        :visible.sync="dialogVisible"
+      >
+        <vue-horizontal-calendar
+          lang="en"
+          v-on:change="onSelectedDate"
+          choosedItemColor="rgb(150, 0, 0)"
+          todayItemColor="rgb(150, 0, 0, .1)"
+          choosedDatePos="center"
+        ></vue-horizontal-calendar>
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            class="btn-default"
+            style="width: auto"
+            @click="dialogVisible = false"
+            >{{ $t("Cancel") }}</el-button
+          >
+        </span>
+      </el-dialog>
     </section>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
 import * as _ from "lodash";
+import moment from "moment";
+import VueHorizontalCalendar from "vue-horizontal-calendar";
+
 export default {
-  components: {},
+  components: {
+    VueHorizontalCalendar,
+  },
   computed: {
     ...mapState({
       movieDetails: (state) => state.movie.movieDetails,
@@ -106,26 +146,57 @@ export default {
     }),
   },
   data() {
-    return {};
+    return {
+      dialogVisible: false,
+    };
   },
   async created() {
     const _this = this;
-    console.log("movieDetails --->>>", _this.movieDetails);
-    console.log("subtitleData --->>>", _this.subtitleData);
-    console.log("categoryData --->>>", _this.categoryData);
+    setTimeout(() => {
+      _this.getData();
+    }, 500);
   },
-  mounted() {
-    const _this = this;
-  },
+  mounted() {},
   watch: {},
   methods: {
+    async getData() {
+      const _this = this;
+      try {
+        const response = await this.$axios.$get(
+          `/user/movie/show/${_this.movieDetails.id}`
+        );
+        if (response.status) {
+          await _this.$store.commit(
+            "movie/SET_MOVIE_DETAILS",
+            response.data.movie
+          );
+        } else {
+          this.$message.error(response.message);
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
+    },
     mapLabel(value, list) {
       const keyIndex = _.findIndex([...list] || [], (o) => o.value === value);
+      console.log("key", keyIndex);
       if (keyIndex > -1) {
         return list[keyIndex].label;
       } else {
         return value;
       }
+    },
+    getDate(date) {
+      return moment(date).format("DD/MM/YYYY") || "";
+    },
+    onSelectedDate(value) {
+      console.log(value);
     },
   },
 };

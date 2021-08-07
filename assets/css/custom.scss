@@ -337,6 +337,12 @@ a:hover {
 }
 
 #dialogCustom {
+  .schedule {
+    .el-dialog {
+      width: 80%;
+    }
+  }
+
   .el-dialog {
     width: 40%;
     background: linear-gradient(
@@ -378,6 +384,6 @@ a:hover {
 
 @media screen and (max-width: 414px) {
   .el-dialog {
-    width: 80% !important;
+    width: 100% !important;
   }
 }
