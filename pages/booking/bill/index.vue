@@ -173,6 +173,7 @@ export default {
       confirmText: "",
       errors: false,
       isSubmit: false,
+      seatErrors: false,
     };
   },
   async created() {
@@ -240,6 +241,9 @@ export default {
         if (response.status) {
           this.onAlertMessageBox("success", $t("PaymentSuccess"));
           this.dialogVisible = false;
+          // const updateAllSeat = _.map([...this.booking.ticket] || [], (o) => {
+          //   return this.onUpdateSeat(o, this.booking.ticketDetails.id);
+          // });
           setTimeout(() => {
             this.$router.push(this.localePath(`/home`));
           }, 2000);
@@ -264,6 +268,37 @@ export default {
       });
     },
   },
+  // async onUpdateSeat(seatData, seatId) {
+  //   try {
+  //     const response = await this.$axios.$post(
+  //       `/user/seat/update/${seatId}`,
+  //       {
+  //         ...seatData,
+  //         status: "sold",
+  //         ticket_id: this.booking.ticketDetails
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: "Bearer " + this.account.token,
+  //         },
+  //       }
+  //     );
+  //     if (response.status) {
+  //     } else {
+  //       this.$message.error(response.message);
+  //       this.seatErrors = true;
+  //     }
+  //   } catch (error) {
+  //     if (error.response) {
+  //       this.seatErrors = true;
+  //       console.log(error.response.data);
+  //       this.onAlertMessageBox(
+  //         "error",
+  //         error.response.data.message || "Response message null"
+  //       );
+  //     }
+  //   }
+  // },
 };
 </script>
 <style lang="scss" scoped>

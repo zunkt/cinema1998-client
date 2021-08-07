@@ -293,6 +293,8 @@ export default {
       seatData: [],
       ticket: [],
       total: 0,
+      seatErrors: false,
+      ticketBooked: [],
     };
   },
   async created() {
@@ -384,11 +386,20 @@ export default {
           }
         );
         if (response.status) {
+          // this.ticketBooked.push({
+          //   value: seat?.value,
+          //   status: "selected",
+          //   price: seat?.price,
+          //   room_id: this.bookingPage.schedule.room_id,
+          //   schedule_id: this.bookingPage.schedule.id,
+          // })
         } else {
           this.$message.error(response.message);
+          this.seatErrors = true;
         }
       } catch (error) {
         if (error.response) {
+          this.seatErrors = true;
           console.log(error.response.data);
           this.onAlertMessageBox(
             "error",
@@ -424,7 +435,9 @@ export default {
             ticketDetails: response.data.ticket,
           });
           setTimeout(() => {
-            this.$router.push(this.localePath(`/booking/bill`));
+            if (!this.seatErrors) {
+              this.$router.push(this.localePath(`/booking/bill`));
+            }
           }, 1000);
         } else {
           this.$message.error(response.message);

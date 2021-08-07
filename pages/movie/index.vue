@@ -130,7 +130,7 @@
                 class="w-100 mt-4 p-3 button-time"
                 v-on:click="onBooking(itemMovie)"
                 >{{ formatTime(itemMovie.time_start, "HH:mm a") }} -
-                {{ formatTime(itemMovie.time_end, "HH:mm a'") }}</el-button
+                {{ formatTime(itemMovie.time_end, "HH:mm a") }}</el-button
               >
             </b-col>
           </b-row>
@@ -215,7 +215,7 @@ export default {
       }
     },
     formatTime(value, type) {
-      return moment(value).utc().format(type);
+      return moment(value).format(type);
     },
     getDate(date) {
       return moment(date).format("DD/MM/YYYY") || "";
