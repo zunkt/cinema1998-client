@@ -109,8 +109,8 @@ export default {
       const _this = this;
       _this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log(_this.changePasswordForm.password)
-          // _this.onChangePassword();
+          if (_this.changePasswordForm.newPassword === _this.changePasswordForm.confirmPassword)
+            _this.onChangePassword();
         } else {
           console.log("error submit!!");
           return false;
@@ -127,13 +127,14 @@ export default {
         const response = await _this.$axios.$post(`/user/reset-password`, {
           token: _this.changePasswordForm.token,
           email: _this.changePasswordForm.email,
-          password: _this.changePasswordForm.password,
+          password: _this.changePasswordForm.confirmPassword,
         });
         if (response.status) {
           await this.onAlertMessageBox(
             "success",
             "Đã thay đổi Password thành công!"
           );
+          _this.$router.push(_this.localePath("/account"));
         } else {
           console.log(response.message);
           this.onAlertMessageBox(
