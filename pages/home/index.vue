@@ -252,7 +252,7 @@ export default {
   methods: {
     async getData() {
       try {
-        const response = await this.$axios.$get(`/user/movie/all`);
+        const response = await this.$axios.$get(`/user/movie/all?size=1000`);
         console.log(response);
         if (response.status) {
           await this.$store.commit(

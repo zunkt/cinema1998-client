@@ -355,7 +355,7 @@ export default {
     async onBooking(movieId, schedule) {
       console.log(this.booking, movieId, schedule);
       try {
-        const responseSeat = await this.$axios.$get(`user/seat/all`, {
+        const responseSeat = await this.$axios.$get(`user/seat/all?size=1000`, {
           headers: {
             Authorization: "Bearer " + this.account.token,
           },

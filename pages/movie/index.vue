@@ -244,7 +244,7 @@ export default {
       console.log("theater", this);
 
       try {
-        const responseSeat = await this.$axios.$get(`user/seat/all`, {
+        const responseSeat = await this.$axios.$get(`user/seat/all?size=1000`, {
           headers: {
             Authorization: "Bearer " + this.account.token,
           },
