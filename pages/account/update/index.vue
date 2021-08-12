@@ -52,7 +52,7 @@
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item prop="phone">
+          <!-- <el-form-item prop="phone">
             <div>
               <span class="form-label">Số điện thoại*</span>
             </div>
@@ -60,7 +60,7 @@
               class="form-input"
               v-model="registerForm.phone"
             ></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item prop="identityNumber">
             <div>
               <span class="form-label">CMND*</span>
@@ -115,7 +115,7 @@ export default {
       registerForm: {
         email: "",
 
-        phone: "",
+        // phone: "",
         fullName: "",
         birthday: "",
         identityNumber: "",
@@ -135,7 +135,7 @@ export default {
           },
         ],
 
-        phone: [{ validator: validatePhone, trigger: "blur" }],
+        // phone: [{ validator: validatePhone, trigger: "blur" }],
 
         fullName: [
           {
@@ -182,7 +182,7 @@ export default {
   async created() {
     this.registerForm = {
       email: this.accountInfo.email,
-      phone: this.accountInfo.phone,
+      // phone: this.accountInfo.phone,
       fullName: this.accountInfo.full_name,
       birthday: "10/1/1998",
       identityNumber: this.accountInfo.identityNumber,
@@ -210,7 +210,7 @@ export default {
             email: this.registerForm.email,
             name: this.registerForm.fullName,
             full_name: this.registerForm.fullName,
-            phone: this.registerForm.phone,
+            // phone: this.registerForm.phone,
             address: this.registerForm.address,
             identityNumber: this.registerForm.identityNumber,
             birthday: this.registerForm.birthday,
@@ -222,10 +222,7 @@ export default {
           }
         );
         if (response.status) {
-          await this.onAlertMessageBox(
-            "success",
-            "Cập nhật thành công thành công"
-          );
+          await this.onAlertMessageBox("success", this.$t("UpdateSuccess"));
           this.$router.push(this.localePath("/account"));
         } else {
           this.onAlertMessageBox(response.message || "Response message null");

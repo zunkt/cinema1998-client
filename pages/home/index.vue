@@ -297,7 +297,7 @@ export default {
       _this.player.stopVideo();
       _this.dialogVisible = false;
       await _this.$store.commit("movie/SET_MOVIE_DETAILS", _this.movieDetails);
-      _this.$router.push(_this.localePath("/booking"));
+      _this.$router.push(_this.localePath("/movie"));
     },
     async onSeeMovieDetail() {
       const _this = this;

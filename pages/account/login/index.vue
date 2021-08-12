@@ -65,6 +65,9 @@
                   Bạn chưa có tài khoản ?
                   <a @click="onRegister()">Đăng ký ngay</a>
                 </div>
+                <div class="register-text">
+                  <a @click="onForgotPassword()">Quên mặt khẩu?</a>
+                </div>
                 <el-form-item class="btn-action">
                   <el-button
                     class="btn-booking"
@@ -149,6 +152,10 @@ export default {
       const _this = this;
       _this.$router.push(_this.localePath("/account/register"));
     },
+    onForgotPassword() {
+      const _this = this;
+      _this.$router.push(_this.localePath("/account/forgot-password"));
+    },
     async onLogin() {
       const _this = this;
       await _this.$axios
@@ -163,7 +170,7 @@ export default {
               token: response.data?.token,
               isLoggedIn: true,
             });
-            await this.onAlertMessageBox("success", "Đăng nhập thành công");
+            await this.onAlertMessageBox("success", this.$t("LoginSuccess"));
             _this.$router.push(_this.localePath("/account"));
           } else {
             this.onAlertMessageBox("error", response.message);

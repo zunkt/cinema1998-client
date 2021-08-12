@@ -16,5 +16,10 @@ export default function({ $axios, app, store, redirect, route }) {
     const code = parseInt(error.response && error.response.status);
     if (code === 400) {
     }
+    if (code === 401) {
+      setTimeout(() => {
+        window.location.href = "/account/login";
+      }, 1000);
+    }
   });
 }

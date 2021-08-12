@@ -173,13 +173,17 @@ export default {
       confirmText: "",
       errors: false,
       isSubmit: false,
+      seatErrors: false,
     };
   },
   async created() {
     this.randomString(10);
     setTimeout(() => {
-      console.log(this.booking);
+      console.log("ssssssssssss", this.booking);
     }, 500);
+    if (_.isEmpty(this.booking)) {
+      this.$router.push(this.localePath(`/home`));
+    }
   },
   watch: {
     confirmText: {
@@ -219,8 +223,19 @@ export default {
     formatTime(value, type) {
       return moment(value).utc().format(type);
     },
-    onCancel() {
-      this.$router.push(this.localePath(`/home`));
+    async onCancel() {
+      const updateAllSeat = _.map([...this.booking.ticket] || [], (o, i) => {
+        return this.onUpdateSeat(o, i, "available");
+      });
+
+      await Promise.all(updateAllSeat);
+      await this.$store.commit("booking/SET_BOOKING", {});
+
+      setTimeout(() => {
+        if (!this.seatErrors) {
+          this.$router.push(this.localePath(`/home`));
+        }
+      }, 2000);
     },
     async onDone() {
       try {
@@ -238,15 +253,28 @@ export default {
           }
         );
         if (response.status) {
-          this.onAlertMessageBox("success", $t("PaymentSuccess"));
+          this.onAlertMessageBox("success", this.$t("PaymentSuccess"));
           this.dialogVisible = false;
+          const updateAllSeat = _.map(
+            [...this.booking.ticket] || [],
+            (o, i) => {
+              return this.onUpdateSeat(o, i, "sold");
+            }
+          );
+
+          await Promise.all(updateAllSeat);
+
+          await this.$store.commit("booking/SET_BOOKING", {});
           setTimeout(() => {
-            this.$router.push(this.localePath(`/home`));
+            if (!this.seatErrors) {
+              this.$router.push(this.localePath(`/home`));
+            }
           }, 2000);
         } else {
           this.$message.error(response.message);
         }
       } catch (error) {
+        console.log(error);
         if (error.response) {
           console.log(error.response.data);
           this.onAlertMessageBox(
@@ -262,6 +290,39 @@ export default {
         message: message,
         type: type,
       });
+    },
+    async onUpdateSeat(seatData, index, value) {
+      try {
+        const response = await this.$axios.$post(
+          `/user/seat/update/${this.booking.seatId[index]["id"]}`,
+          {
+            status: value,
+            price: seatData.price,
+            ticket_id: this.booking.ticketDetails.id,
+            seat_id: this.booking.seatRoomId[index]["id"],
+            schedule_id: seatData.schedule_id,
+          },
+          {
+            headers: {
+              Authorization: "Bearer " + this.account.token,
+            },
+          }
+        );
+        if (response.status) {
+        } else {
+          this.$message.error(response.message);
+          this.seatErrors = true;
+        }
+      } catch (error) {
+        if (error.response) {
+          this.seatErrors = true;
+          console.log(error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
     },
   },
 };

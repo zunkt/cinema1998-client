@@ -74,7 +74,7 @@
             >
             </el-date-picker>
           </el-form-item>
-          <el-form-item prop="phone">
+          <!-- <el-form-item prop="phone">
             <div>
               <span class="form-label">Số điện thoại*</span>
             </div>
@@ -82,7 +82,7 @@
               class="form-input"
               v-model="registerForm.phone"
             ></el-input>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item prop="identityNumber">
             <div>
               <span class="form-label">CMND*</span>
@@ -171,7 +171,7 @@ export default {
         email: "",
         password: "",
         confirmPassword: "",
-        phone: "",
+        // phone: "",
         fullName: "",
         birthday: "",
         identityNumber: "",
@@ -203,7 +203,7 @@ export default {
             trigger: "blur",
           },
         ],
-        phone: [{ validator: validatePhone, trigger: "blur" }],
+        // phone: [{ validator: validatePhone, trigger: "blur" }],
         confirmPassword: [
           { validator: validateConfirmPassword, trigger: "blur" },
         ],
@@ -273,14 +273,11 @@ export default {
           full_name: _this.registerForm.fullName,
           identityNumber: _this.registerForm.identityNumber,
           address: _this.registerForm.address,
-          phone: _this.registerForm.phone,
+          // phone: _this.registerForm.phone,
           password: _this.registerForm.password,
         });
         if (response.status) {
-          await this.onAlertMessageBox(
-            "success",
-            "Đăng ký thành công thành công"
-          );
+          await this.onAlertMessageBox("success", this.$t("RegisterSuccess"));
           setTimeout(() => {
             _this.$router.push(_this.localePath("/account"));
           }, 500);
@@ -303,6 +300,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.$router.push(this.localePath("/home"));
     },
     onSeePolicy() {
       const _this = this;

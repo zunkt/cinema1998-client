@@ -76,7 +76,7 @@
               <div class="page-header">{{ $t("ShowTimes") }}</div>
               <div
                 class="schedule mb-4 mt-2"
-                v-for="(item, index) in schedule"
+                v-for="(item, index) in scheduleData"
                 :key="index"
               >
                 <b-row class="mx-0">
@@ -85,11 +85,11 @@
                     class="text-left pt-4 h4 font-weight-bold text-white"
                     style="font-family: BalooTammudu2"
                   >
-                    {{ formatTime(item.date, "DD/MM/YYYY") }}
+                    {{ item }}
                   </b-col>
                   <b-row
                     class="w-100 mx-0"
-                    v-for="(itemMovie, indexMovie) in item.movie"
+                    v-for="(itemMovie, indexMovie) in groupDataByMovie(item)"
                     :key="indexMovie"
                   >
                     <b-col
@@ -97,10 +97,10 @@
                       style="font-family: BalooTammudu2"
                       class="h4 font-weight-bold text-white pt-4 pb-2"
                     >
-                      {{ itemMovie.name }}
+                      {{ mapMoviesLabel(itemMovie[0].movie_id) }}
                     </b-col>
                     <b-col
-                      v-for="(itemTime, indexTime) in itemMovie.time"
+                      v-for="(itemTime, indexTime) in itemMovie"
                       :key="indexTime"
                       lg="3"
                       md="4"
@@ -108,10 +108,12 @@
                       class="schedule-box"
                     >
                       <el-button
-                        v-on:click="onBooking(itemMovie, itemTime)"
+                        v-on:click="onBooking(itemMovie[0].movie_id, itemTime)"
                         class="w-100 mt-4 p-3 button-time"
-                        >{{ formatTime(itemTime.timeStart, "HH:mm a") }} -
-                        {{ formatTime(itemTime.timeEnd, "HH:mm a") }}</el-button
+                        >{{ formatTime(itemTime.time_start, "HH:mm a") }} -
+                        {{
+                          formatTime(itemTime.time_end, "HH:mm a")
+                        }}</el-button
                       >
                     </b-col>
                   </b-row>
@@ -135,6 +137,7 @@ export default {
     ...mapState({
       booking: (state) => state.booking.booking,
       account: (state) => state.account.account,
+      moviesData: (state) => state.movie.moviesData,
     }),
     emptyRoom() {
       return _.isEmpty(this.selectedRoom);
@@ -311,6 +314,9 @@ export default {
       ],
       selectedRoom: {},
       scheduleData: [],
+      scheduleDataGroupByDate: [],
+      seatGroupbySchedule: [],
+      seatAllData: [],
     };
   },
   async created() {
@@ -332,19 +338,6 @@ export default {
         } else {
           this.$message.error(response.message);
         }
-
-        /// *** Schedule *** ///
-        const responseSchedule = await this.$axios.$get(`/user/schedule/all`, {
-          headers: {
-            Authorization: "Bearer " + this.account.token,
-          },
-        });
-        console.log("responseSchedule:", response);
-        if (responseSchedule.status) {
-          this.scheduleData = responseSchedule.data.schedule.data;
-        } else {
-          this.$message.error(responseSchedule.message);
-        }
       } catch (error) {
         if (error.response) {
           console.log("Error:", error.response.data);
@@ -359,30 +352,133 @@ export default {
   mounted() {},
   methods: {
     getData() {},
-    async onBooking(movie, time) {
-      console.log(this.booking, movie, time);
-      await this.$store.commit("booking/SET_BOOKING", {
-        ...this.booking,
-        movie: {
-          ...movie,
-        },
-        time: {
-          ...time,
-        },
-      });
-      this.$router.push(this.localePath(`/booking?${movie.name}`));
+    async onBooking(movieId, schedule) {
+      console.log(this.booking, movieId, schedule);
+      try {
+        const responseSeat = await this.$axios.$get(`user/seat/all`, {
+          headers: {
+            Authorization: "Bearer " + this.account.token,
+          },
+        });
+        if (responseSeat.data) {
+          this.seatAllData = responseSeat.data.seat.data;
+        } else {
+          this.$message.error(responseSeat.message);
+        }
+
+        const seatGroupbySchedule =
+          _.filter(
+            [...this.seatAllData] || [],
+            (o) =>
+              o.schedule.id === schedule.id &&
+              o.schedule.room_id === schedule.room_id
+          ) || [];
+
+        const newSeatGroupbySchedule = _.map(
+          [...seatGroupbySchedule] || [],
+          (o) => {
+            return {
+              id: o.id,
+              status: o.status,
+              price: o.price,
+              value: o.seat_room.value,
+              schedule_id: o.schedule.id,
+              room_id: o.schedule.room_id,
+            };
+          }
+        );
+
+        console.log("seatGroupbySchedule", newSeatGroupbySchedule);
+
+        this.seatGroupbySchedule = newSeatGroupbySchedule;
+
+        await this.$store.commit("booking/SET_BOOKING", {
+          ...this.booking,
+          movie: {
+            ...this.getMoviesData(movieId),
+          },
+          schedule: {
+            ...schedule,
+          },
+          seatBooked: this.seatGroupbySchedule,
+        });
+
+        this.$router.push(
+          this.localePath(`/booking?${this.getMoviesData(movieId)?.name}`)
+        );
+      } catch (error) {
+        console.log(error);
+        if (error.response) {
+          console.log("Error:", error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
     },
     formatTime(value, type) {
       return moment(value).format(type);
     },
-    onSelectedRoom(value) {
+    async onSelectedRoom(value) {
       console.log(value);
       this.selectedRoom = value;
-      const keyIndex = _.findIndex(
-        [...this.scheduleData] || [],
-        (o) => o.room?.id === value.id && o.room?.theater_id === this.theater.id
-      );
-      console.log(keyIndex);
+
+      try {
+        /// *** room details *** ///
+        const response = await this.$axios.$get(`/user/room/show/${value.id}`, {
+          headers: {
+            Authorization: "Bearer " + this.account.token,
+          },
+        });
+        if (response.status) {
+          let dateNow = moment().subtract(1, "d").format("YYYY/MM/DD");
+          /// *** Create 5 days from now to see schedule *** ///
+          this.scheduleData = _.map([1, 2, 3, 4, 5], (o) => {
+            dateNow = moment(dateNow, "YYYY/MM/DD")
+              .add(1, "days")
+              .format("YYYY/MM/DD");
+            return dateNow;
+          });
+
+          /// *** Data schedule group by date start ***///
+          this.scheduleDataGroupByDate = this.groupByParams(
+            response.data.room.schedule,
+            "date_start"
+          );
+
+          // this.seatGroupbySchedule = newSeatGroupbySchedule;
+          // _.filter(
+          //   [...response.data.room.seat] || [],
+          //   (o) => o.schedule_id === value.id
+          // ) || [];
+        } else {
+          this.$message.error(response.message);
+        }
+      } catch (error) {
+        console.log(error);
+        if (error.response) {
+          console.log("Error:", error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
+    },
+    groupDataByMovie(date) {
+      if (this.scheduleDataGroupByDate) {
+        console.log(
+          this.groupByParams(
+            this.scheduleDataGroupByDate[date] || [],
+            "movie_id"
+          )
+        );
+        return this.groupByParams(
+          this.scheduleDataGroupByDate[date] || [],
+          "movie_id"
+        );
+      }
     },
     onAlertMessageBox(type, message) {
       const _this = this;
@@ -390,6 +486,30 @@ export default {
         message: message,
         type: type,
       });
+    },
+    groupByParams(xs, key) {
+      return xs.reduce(function (rv, x) {
+        (rv[x[key]] = rv[x[key]] || []).push(x);
+        return rv;
+      }, {});
+    },
+    mapMoviesLabel(movie_id) {
+      const keyIndex = _.findIndex(
+        [...this.moviesData] || [],
+        (o) => o.id === movie_id
+      );
+      if (keyIndex > -1) {
+        return this.moviesData[keyIndex].name;
+      }
+    },
+    getMoviesData(movie_id) {
+      const keyIndex = _.findIndex(
+        [...this.moviesData] || [],
+        (o) => o.id === movie_id
+      );
+      if (keyIndex > -1) {
+        return this.moviesData[keyIndex];
+      }
     },
   },
 };
