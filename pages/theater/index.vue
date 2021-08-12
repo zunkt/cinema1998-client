@@ -93,7 +93,7 @@ export default {
   watch: {},
   methods: {
     async getData() {
-      const response = await this.$axios.$get(`user/theater/all?size=100`);
+      const response = await this.$axios.$get(`user/theater/all?size=1000`);
       console.log(response);
       /// *** fix status *** ///
       if (response) {

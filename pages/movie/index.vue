@@ -222,19 +222,24 @@ export default {
       return moment(date).format("DD/MM/YYYY") || "";
     },
     onSelectedDate(value) {
-      console.log(value.dateFormat);
-      console.log(this.movieDetails);
-      const keyIndex = _.findIndex(
-        [...this.movieDetails.schedule] || [],
-        (o) => o.date_start === value.dateFormat
-      );
-      console.log(keyIndex);
-      if (keyIndex > -1) {
-        this.haveSchedule = true;
-        this.scheduleData = _.filter(
+      const nowDate =
+        moment().diff(moment(value.dateFormat), "days", false) <= 0;
+      if (nowDate) {
+        const keyIndex = _.findIndex(
           [...this.movieDetails.schedule] || [],
           (o) => o.date_start === value.dateFormat
         );
+        console.log(keyIndex);
+
+        if (keyIndex > -1) {
+          this.haveSchedule = true;
+          this.scheduleData = _.filter(
+            [...this.movieDetails.schedule] || [],
+            (o) => o.date_start === value.dateFormat
+          );
+        } else {
+          this.scheduleData = [];
+        }
       } else {
         this.scheduleData = [];
       }
