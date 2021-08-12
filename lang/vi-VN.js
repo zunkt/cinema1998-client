@@ -43,6 +43,9 @@ export default {
   PleaseCheckYourMail: "Vui lòng kiểm tra Mail của bạn!",
   ResetPassword: "Reset Mật Khẩu",
   ResetPasswordSuccess: "Đã thay đổi Password thành công!",
+  LoginSuccess: "Đăng nhập thành công",
+  RegisterSuccess: "Đăng ký thành công",
+  UpdateSuccess: "Cập nhật thành công",
   Errors: {
     EmailRequired: "Vui lòng nhập Email",
     EmailInvalid: "Email không hợp lệ"

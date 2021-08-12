@@ -118,7 +118,7 @@ export default {
         if (response.status) {
           await this.onAlertMessageBox(
             "success",
-            response.message || $t("PleaseCheckYourMail")
+            response.message || this.$t("PleaseCheckYourMail")
           );
           setTimeout(() => {
             _this.$router.push(_this.localePath("/account"));

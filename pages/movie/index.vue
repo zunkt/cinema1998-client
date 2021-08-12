@@ -170,6 +170,7 @@ export default {
       dialogVisible: false,
       haveSchedule: false,
       scheduleData: [],
+      seatAllData: [],
     };
   },
   async created() {
@@ -241,7 +242,18 @@ export default {
     async onBooking(value) {
       console.log("schedule :", value);
       console.log("theater", this);
+
       try {
+        const responseSeat = await this.$axios.$get(`user/seat/all`, {
+          headers: {
+            Authorization: "Bearer " + this.account.token,
+          },
+        });
+        if (responseSeat.data) {
+          this.seatAllData = responseSeat.data.seat.data;
+        } else {
+          this.$message.error(responseSeat.message);
+        }
         const response = await this.$axios.$get(
           `/user/room/show/${value.room_id}`,
           {
@@ -250,18 +262,33 @@ export default {
             },
           }
         );
-        console.log(response);
         if (response.status) {
           const seatGroupbySchedule =
             _.filter(
-              [...response.data.room.seat] || [],
-              (o) => o.schedule_id === value.id
+              [...this.seatAllData] || [],
+              (o) =>
+                o.schedule.id === value.id &&
+                o.schedule.room_id === value.room_id
             ) || [];
+          const newSeatGroupbySchedule = _.map(
+            [...seatGroupbySchedule] || [],
+            (o) => {
+              return {
+                id: o.id,
+                status: o.status,
+                price: o.price,
+                value: o.seat_room.value,
+                schedule_id: o.schedule.id,
+                room_id: o.schedule.room_id,
+              };
+            }
+          );
+          console.log("seatGroupbySchedule", newSeatGroupbySchedule);
           await this.$store.commit("booking/SET_BOOKING", {
             theater: response.data.room.theater,
             schedule: value,
             movie: this.movieDetails,
-            seatBooked: seatGroupbySchedule,
+            seatBooked: newSeatGroupbySchedule,
           });
           setTimeout(() => {
             this.$router.push(
@@ -272,6 +299,7 @@ export default {
           this.$message.error(response.message);
         }
       } catch (error) {
+        console.log(error);
         if (error.response) {
           console.log(error.response.data);
           this.onAlertMessageBox(
@@ -280,6 +308,13 @@ export default {
           );
         }
       }
+    },
+    onAlertMessageBox(type, message) {
+      const _this = this;
+      _this.$message({
+        message: message,
+        type: type,
+      });
     },
   },
 };

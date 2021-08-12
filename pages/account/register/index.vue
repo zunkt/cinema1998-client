@@ -277,10 +277,7 @@ export default {
           password: _this.registerForm.password,
         });
         if (response.status) {
-          await this.onAlertMessageBox(
-            "success",
-            "Đăng ký thành công thành công"
-          );
+          await this.onAlertMessageBox("success", this.$t("RegisterSuccess"));
           setTimeout(() => {
             _this.$router.push(_this.localePath("/account"));
           }, 500);
@@ -303,6 +300,7 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();
+      this.$router.push(this.localePath("/home"));
     },
     onSeePolicy() {
       const _this = this;

@@ -316,6 +316,7 @@ export default {
       scheduleData: [],
       scheduleDataGroupByDate: [],
       seatGroupbySchedule: [],
+      seatAllData: [],
     };
   },
   async created() {
@@ -353,20 +354,68 @@ export default {
     getData() {},
     async onBooking(movieId, schedule) {
       console.log(this.booking, movieId, schedule);
-      await this.$store.commit("booking/SET_BOOKING", {
-        ...this.booking,
-        movie: {
-          ...this.getMoviesData(movieId),
-        },
-        schedule: {
-          ...schedule,
-        },
-        seatBooked: this.seatGroupbySchedule,
-      });
+      try {
+        const responseSeat = await this.$axios.$get(`user/seat/all`, {
+          headers: {
+            Authorization: "Bearer " + this.account.token,
+          },
+        });
+        if (responseSeat.data) {
+          this.seatAllData = responseSeat.data.seat.data;
+        } else {
+          this.$message.error(responseSeat.message);
+        }
 
-      this.$router.push(
-        this.localePath(`/booking?${this.getMoviesData(movieId)?.name}`)
-      );
+        const seatGroupbySchedule =
+          _.filter(
+            [...this.seatAllData] || [],
+            (o) =>
+              o.schedule.id === schedule.id &&
+              o.schedule.room_id === schedule.room_id
+          ) || [];
+
+        const newSeatGroupbySchedule = _.map(
+          [...seatGroupbySchedule] || [],
+          (o) => {
+            return {
+              id: o.id,
+              status: o.status,
+              price: o.price,
+              value: o.seat_room.value,
+              schedule_id: o.schedule.id,
+              room_id: o.schedule.room_id,
+            };
+          }
+        );
+
+        console.log("seatGroupbySchedule", newSeatGroupbySchedule);
+
+        this.seatGroupbySchedule = newSeatGroupbySchedule;
+
+        await this.$store.commit("booking/SET_BOOKING", {
+          ...this.booking,
+          movie: {
+            ...this.getMoviesData(movieId),
+          },
+          schedule: {
+            ...schedule,
+          },
+          seatBooked: this.seatGroupbySchedule,
+        });
+
+        this.$router.push(
+          this.localePath(`/booking?${this.getMoviesData(movieId)?.name}`)
+        );
+      } catch (error) {
+        console.log(error);
+        if (error.response) {
+          console.log("Error:", error.response.data);
+          this.onAlertMessageBox(
+            "error",
+            error.response.data.message || "Response message null"
+          );
+        }
+      }
     },
     formatTime(value, type) {
       return moment(value).format(type);
@@ -398,11 +447,11 @@ export default {
             "date_start"
           );
 
-          this.seatGroupbySchedule =
-            _.filter(
-              [...response.data.room.seat] || [],
-              (o) => o.schedule_id === value.id
-            ) || [];
+          // this.seatGroupbySchedule = newSeatGroupbySchedule;
+          // _.filter(
+          //   [...response.data.room.seat] || [],
+          //   (o) => o.schedule_id === value.id
+          // ) || [];
         } else {
           this.$message.error(response.message);
         }
@@ -420,7 +469,6 @@ export default {
     groupDataByMovie(date) {
       if (this.scheduleDataGroupByDate) {
         console.log(
-          "sssssssssssssssssssssssss",
           this.groupByParams(
             this.scheduleDataGroupByDate[date] || [],
             "movie_id"

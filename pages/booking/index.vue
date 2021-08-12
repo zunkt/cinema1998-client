@@ -295,6 +295,8 @@ export default {
       total: 0,
       seatErrors: false,
       ticketBooked: [],
+      seatId: [],
+      seatRoomId: [],
     };
   },
   async created() {
@@ -369,15 +371,11 @@ export default {
     },
     async onAddSeat(seatValue, ticketId) {
       try {
-        const response = await this.$axios.$post(
-          `/user/seat/store`,
+        const responseSeatRoom = await this.$axios.$post(
+          `user/seatroom/store`,
           {
             value: seatValue.value,
-            status: "booked",
-            price: seatValue.price,
-            ticket_id: ticketId,
             room_id: seatValue.room_id,
-            schedule_id: seatValue.schedule_id,
           },
           {
             headers: {
@@ -385,16 +383,43 @@ export default {
             },
           }
         );
-        if (response.status) {
-          // this.ticketBooked.push({
-          //   value: seat?.value,
-          //   status: "selected",
-          //   price: seat?.price,
-          //   room_id: this.bookingPage.schedule.room_id,
-          //   schedule_id: this.bookingPage.schedule.id,
-          // })
+        if (responseSeatRoom.status) {
+          this.seatRoomId.push({
+            id: responseSeatRoom.data.seat_room.id,
+          });
+          const response = await this.$axios.$post(
+            `/user/seat/store`,
+            {
+              value: seatValue.value,
+              status: "booked",
+              price: seatValue.price,
+              ticket_id: ticketId,
+              seat_id: responseSeatRoom.data.seat_room.id,
+              schedule_id: seatValue.schedule_id,
+            },
+            {
+              headers: {
+                Authorization: "Bearer " + this.account.token,
+              },
+            }
+          );
+          if (response.status) {
+            this.seatId.push({
+              id: response.data.seat.id,
+            });
+            // this.ticketBooked.push({
+            //   value: seat?.value,
+            //   status: "selected",
+            //   price: seat?.price,
+            //   room_id: this.bookingPage.schedule.room_id,
+            //   schedule_id: this.bookingPage.schedule.id,
+            // })
+          } else {
+            this.$message.error(response.message);
+            this.seatErrors = true;
+          }
         } else {
-          this.$message.error(response.message);
+          this.$message.error(responseSeatRoom.message);
           this.seatErrors = true;
         }
       } catch (error) {
@@ -433,7 +458,10 @@ export default {
             ...this.booking,
             ticket: this.ticket,
             ticketDetails: response.data.ticket,
+            seatId: this.seatId,
+            seatRoomId: this.seatRoomId,
           });
+          console.log("cccccccccccc", this.seatId);
           setTimeout(() => {
             if (!this.seatErrors) {
               this.$router.push(this.localePath(`/booking/bill`));

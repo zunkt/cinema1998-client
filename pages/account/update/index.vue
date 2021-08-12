@@ -222,10 +222,7 @@ export default {
           }
         );
         if (response.status) {
-          await this.onAlertMessageBox(
-            "success",
-            "Cập nhật thành công thành công"
-          );
+          await this.onAlertMessageBox("success", this.$t("UpdateSuccess"));
           this.$router.push(this.localePath("/account"));
         } else {
           this.onAlertMessageBox(response.message || "Response message null");
