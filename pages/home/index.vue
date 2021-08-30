@@ -158,6 +158,8 @@ import HomeNavbar from "@/components/HomeNavbar";
 import moment from "moment";
 import { mapState } from "vuex";
 import { moviesDataLocal, advertisementSlide } from "@/pages/data";
+import { subtitleData, categoryData } from "@/pages/data";
+
 export default {
   components: {
     HomeNavbar,
@@ -232,6 +234,8 @@ export default {
     await _this.$store.commit("movie/SET_MOVIES_DATA", moviesDataLocal);
     this.getData();
     console.log(moment().format());
+    await _this.$store.commit("masterData/SET_SUBTITLE_DATA", subtitleData);
+    await _this.$store.commit("masterData/SET_CATEGORY_DATA", categoryData);
   },
   mounted() {
     this.getData();

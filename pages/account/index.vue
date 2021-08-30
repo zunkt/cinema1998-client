@@ -28,23 +28,27 @@
             <b-col md="6" cols="12">
               <div class="page-row">
                 {{ $t("FullName") }}:
-                <span class="page-info"> {{ accountInfo.full_name }} </span>
+                <span class="page-info">
+                  {{ accountInfo && accountInfo.full_name }}
+                </span>
               </div>
               <div class="page-row">
                 Email :
-                <span class="page-info"> {{ accountInfo.email }} </span>
+                <span class="page-info">
+                  {{ accountInfo && accountInfo.email }}
+                </span>
               </div>
               <!-- <div class="page-row">
                 {{ $t("Phone") }}:
                 <span class="page-info"> {{ accountInfo.phone }} </span>
               </div> -->
               <div class="page-row page-info">
-                {{ $t("Hello") }} {{ accountInfo.full_name }},
+                {{ $t("Hello") }} {{ accountInfo && accountInfo.full_name }},
               </div>
               <div class="page-row">
                 {{ $t("Address") }} :
                 <span class="page-info">
-                  {{ accountInfo.address }}
+                  {{ accountInfo && accountInfo.address }}
                 </span>
               </div>
               <div class="page-row">
