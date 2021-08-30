@@ -222,6 +222,7 @@ export default {
       return moment(date).format("DD/MM/YYYY") || "";
     },
     onSelectedDate(value) {
+      console.log(value.dateFormat);
       const nowDate =
         moment().diff(moment(value.dateFormat), "days", false) <= 0;
       if (nowDate) {

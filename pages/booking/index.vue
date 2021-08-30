@@ -371,7 +371,7 @@ export default {
       // this.$router.push(this.localePath(`/booking/corn`));
     },
     formatTime(value, type) {
-      return moment(value).utc().format(type);
+      return moment(value).format(type);
     },
     async onAddSeat(seatValue, ticketId) {
       try {
