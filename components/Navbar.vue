@@ -161,7 +161,9 @@ export default {
     },
 
     onChangeLanguaue(value) {
-      this.$i18n.locale = value;
+      if (this.$i18n.locale !== value) {
+        this.$i18n.setLocale(value);
+      }
     },
 
     onResize() {
