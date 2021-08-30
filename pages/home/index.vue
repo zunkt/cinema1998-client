@@ -140,9 +140,12 @@
         :player-height="windowWidth < 414 ? 366 : 480"
       ></youtube>
       <div class="btn-action">
-        <el-button class="btn-booking" @click="onBooking">{{
-          $t("MovieScreen.Booking")
-        }}</el-button>
+        <el-button
+          v-if="movieDetails.type !== 'up-coming'"
+          class="btn-booking"
+          @click="onBooking"
+          >{{ $t("MovieScreen.Booking") }}</el-button
+        >
         <el-button class="btn-booking" @click="onSeeMovieDetail">{{
           $t("SeeDetails")
         }}</el-button>

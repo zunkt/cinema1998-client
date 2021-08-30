@@ -11,7 +11,7 @@
   >
     <div class="container navbar-container">
       <el-row>
-        <el-col :span="6">
+        <el-col :span="8">
           <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
@@ -37,7 +37,7 @@
             {{ $t("Theater") }}
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
@@ -68,7 +68,7 @@
             {{ $t("Member") }}
           </div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="8">
           <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
@@ -91,8 +91,8 @@
           </div>
         </el-col>
 
-        <el-col :span="6">
-          <!-- <el-popover
+        <!-- <el-col :span="6"> -->
+        <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
             width="200"
@@ -118,10 +118,10 @@
             </div>
             <div slot="reference" class="menu--title">Cultureplex</div>
           </el-popover> -->
-          <div class="menu--title" @click="goToPage('/cultureplex')">
+        <!-- <div class="menu--title" @click="goToPage('/cultureplex')">
             {{ $t("GiftCard") }}
-          </div>
-        </el-col>
+          </div> -->
+        <!-- </el-col> -->
       </el-row>
     </div>
   </div>

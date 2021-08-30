@@ -1,18 +1,6 @@
 <template>
-  <footer
-    style="
-    display: flex;
-    justify-content: center;
-    background: linear-gradient(to bottom, #12151a 0%, #182a3a 100%) !important;"
-    class="pb-3 py-lg-4"
-  >
-    <div
-      class="align-items-center py-3 mb-2"
-      style="
-      max-width: 1440px;
-      flex: 1;
-      background: linear-gradient(to bottom, #12151a 0%, #182a3a 100%) !important;"
-    >
+  <footer class="pb-3 py-lg-4 footer-background">
+    <div class="align-items-center py-3 mb-2 footer-background-content">
       <b-container>
         <b-row>
           <b-col class="pl-4">
@@ -20,7 +8,7 @@
               <div
                 v-bind:style="{
                   backgroundImage:
-                    'url(' + require('@/assets/images/logo_short.png') + ')'
+                    'url(' + require('@/assets/images/logo_short.png') + ')',
                 }"
                 class="logo-style"
               />
@@ -31,8 +19,7 @@
               class="working-time mb-0 text-white"
               style="font-size: 12px; line-height: 1.4"
             >
-              Thời gian làm việc: Từ T2 đến Chủ nhật <br />Từ 7h30 – 23h00
-              (không nghỉ trưa)
+              {{ $t("WorkTime") }} <br />{{ $t("WorkTime1") }}
             </p>
           </b-col>
         </b-row>
@@ -46,10 +33,20 @@ export default {
   data() {
     return {};
   },
-  methods: {}
+  methods: {},
 };
 </script>
 <style scoped>
+.footer-background {
+  display: flex;
+  justify-content: center;
+  background: linear-gradient(to bottom, #12151a 0%, #182a3a 100%) !important;
+}
+.footer-background-content {
+  max-width: 1440px;
+  flex: 1;
+  background: linear-gradient(to bottom, #12151a 0%, #182a3a 100%) !important;
+}
 .logo-style {
   width: 100px;
   height: 50px;

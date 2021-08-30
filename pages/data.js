@@ -247,11 +247,11 @@ export const moviesDataLocal = [
 
 export const subtitleData = [
   {
-    label: "Tiếng Việt",
+    label: "Vietnamese",
     value: "vietnam"
   },
   {
-    label: "Tiếng Anh",
+    label: "English",
     value: "eng"
   }
 ];

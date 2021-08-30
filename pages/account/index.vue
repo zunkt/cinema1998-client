@@ -11,7 +11,7 @@
               <div class="page-avatar">
                 <img :src="imageUrl" />
               </div>
-              <div class="page-avatar-action">
+              <!-- <div class="page-avatar-action">
                 <el-upload
                   action="#"
                   class="page-avatar-uploader"
@@ -23,7 +23,7 @@
                     $t("ChangeImage")
                   }}</el-button>
                 </el-upload>
-              </div>
+              </div> -->
             </b-col>
             <b-col md="6" cols="12">
               <div class="page-row">
@@ -102,7 +102,7 @@ export default {
   data() {
     return {
       imageUrl:
-        "https://i.pinimg.com/474x/38/59/b9/3859b97b40b39af061876a73583f7078.jpg",
+        "https://gogaffl-public.s3-us-west-2.amazonaws.com/default-pro-pic.jpg",
     };
   },
   async created() {

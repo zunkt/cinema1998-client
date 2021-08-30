@@ -40,7 +40,7 @@
             cập nhật cấp bậc.
           </div>
           <div class="page-row">
-            -BHD Star sẽ xét lại cấp bậc thành viên sau 12 tháng dựa trên số
+            -Cinema 1998 sẽ xét lại cấp bậc thành viên sau 12 tháng dựa trên số
             Visit tích lũy được trong 12 tháng trước đó.
           </div>
           <div class="page-row page-label">3.QUY ĐỊNH VỀ ĐIỂM THƯỞNG</div>
@@ -88,16 +88,16 @@
             khi thanh toán tại quầy vé và đồ ăn thức uống để được tích điểm.
           </div>
           <div class="page-row">
-            -Khi mua vé online trên website hoặc ứng dụng di động BHD Star, vui
-            lòng đăng nhập thành viên trước khi chọn phim hoặc suất chiếu để
-            được tích điểm. -BHD Star Cineplex có quyền thay đổi bất kỳ điều
+            -Khi mua vé online trên website hoặc ứng dụng di động Cinema 1998,
+            vui lòng đăng nhập thành viên trước khi chọn phim hoặc suất chiếu để
+            được tích điểm. -Cinema 1998 Cineplex có quyền thay đổi bất kỳ điều
             khoản nào và sẽ có thông báo chi tiết trên website, tại rạp và email
             cá nhân cho khách hàng trước ngày chính thức áp dụng thay đổi.
           </div>
           <div class="page-row">
             -Mọi thắc mắc liên quan đến tài khoản thành viên, khách hàng vui
-            lòng liên hệ hotline 1900 2099 hoặc email cskh@bhdstar.vn để được hỗ
-            trợ.
+            lòng liên hệ hotline 20110 1122 hoặc email cskh-cinema1998@gmail.vn
+            để được hỗ trợ.
           </div>
         </div>
       </div>

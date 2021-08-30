@@ -83,7 +83,7 @@
             </div>
           </nuxt-link>
 
-          <el-popover
+          <!-- <el-popover
             id="cinema-menu"
             placement="bottom"
             width="200"
@@ -98,7 +98,7 @@
             <nuxt-link slot="reference" :to="localePath('/cultureplex')">
               <div class="menu--title">Cultureplex</div>
             </nuxt-link>
-          </el-popover>
+          </el-popover> -->
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->

@@ -255,6 +255,7 @@
 import { mapState } from "vuex";
 import { seatDataConfig } from "@/pages/booking/seat";
 import moment from "moment";
+import * as _ from "lodash";
 
 export default {
   components: {},
@@ -315,6 +316,9 @@ export default {
         });
       });
     }, 500);
+    if (_.isEmpty(this.booking)) {
+      this.$router.push(this.localePath(`/home`));
+    }
   },
   async mounted() {},
   methods: {

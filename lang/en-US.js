@@ -72,5 +72,7 @@ export default {
     SeatConfirm1: "Do you have purchase confirmation",
     SeatConfirm2: "ticket with amount",
     BillInformation: "Invoice Information"
-  }
+  },
+  WorkTime: "Working time: From Monday to Sunday",
+  WorkTime1: "From 7:30 to 23:00 (no lunch break)"
 };

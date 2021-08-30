@@ -69,5 +69,7 @@ export default {
     SeatConfirm1: "Bạn có xác nhận mua",
     SeatConfirm2: "vé với số tiền",
     BillInformation: "Thông tin hóa đơn"
-  }
+  },
+  WorkTime: "Thời gian làm việc: Từ T2 đến Chủ nhật",
+  WorkTime1: "Từ 7h30 – 23h00 (không nghỉ trưa)"
 };
