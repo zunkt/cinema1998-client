@@ -71,5 +71,12 @@ export default {
     BillInformation: "Thông tin hóa đơn"
   },
   WorkTime: "Thời gian làm việc: Từ T2 đến Chủ nhật",
-  WorkTime1: "Từ 7h30 – 23h00 (không nghỉ trưa)"
+  WorkTime1: "Từ 7h30 – 23h00 (không nghỉ trưa)",
+  History: "Lịch sử",
+  HistoryBooked: "Lịch sử đặt vé",
+  GameShow: "Ngày chiếu",
+  Price: "Giá",
+  Status: "Trạng thái",
+  Success: "Thành công",
+  Cancelled: "Hủy"
 };

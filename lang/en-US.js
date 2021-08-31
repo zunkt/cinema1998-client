@@ -74,5 +74,12 @@ export default {
     BillInformation: "Invoice Information"
   },
   WorkTime: "Working time: From Monday to Sunday",
-  WorkTime1: "From 7:30 to 23:00 (no lunch break)"
+  WorkTime1: "From 7:30 to 23:00 (no lunch break)",
+  History: "History",
+  HistoryBooked: "Booking history",
+  GameShow: "Show date",
+  Price: "Price",
+  Status: "Status",
+  Success: "Success",
+  Cancelled: "Cancelled"
 };

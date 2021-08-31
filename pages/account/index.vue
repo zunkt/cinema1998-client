@@ -74,15 +74,29 @@
         </div>
         <div class="page-content-style">
           <div class="page-row justify-content-start d-flex flex-row">
-            <el-button class="btn-default" @click="onSeeDetails()"
-              ><div>{{ $t("Details") }}</div>
-            </el-button>
-            <el-button class="btn-default" @click="onChangePassword()"
-              ><div>{{ $t("ChangePassword") }}</div>
-            </el-button>
-            <el-button class="btn-default" @click="onLogout()"
-              ><div>{{ $t("Logout") }}</div>
-            </el-button>
+            <el-col :span="12" class="px-2">
+              <el-button class="btn-default" @click="onSeeDetails()"
+                ><div>{{ $t("Details") }}</div>
+              </el-button>
+            </el-col>
+
+            <el-col :span="12" class="px-2">
+              <el-button class="btn-default" @click="onChangePassword()"
+                ><div>{{ $t("ChangePassword") }}</div>
+              </el-button>
+            </el-col>
+          </div>
+          <div class="page-row justify-content-start d-flex flex-row">
+            <el-col :span="12" class="px-2">
+              <el-button class="btn-default" @click="onSeeHistory()"
+                ><div>{{ $t("History") }}</div>
+              </el-button>
+            </el-col>
+            <el-col :span="12" class="px-2">
+              <el-button class="btn-default" @click="onLogout()"
+                ><div>{{ $t("Logout") }}</div>
+              </el-button>
+            </el-col>
           </div>
         </div>
       </div>
@@ -187,6 +201,10 @@ export default {
         this.$message.error("Avatar picture size can not exceed 2MB!");
       }
       return isJPG && isLt2M;
+    },
+    onSeeHistory() {
+      const _this = this;
+      _this.$router.push(_this.localePath("/account/history"));
     },
   },
 };
